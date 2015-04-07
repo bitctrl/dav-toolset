@@ -1,9 +1,9 @@
 rem @echo off
 
 java ^
- -cp de.bitctrl.dav.toolset-runtime.jar ^
+ -cp de.bitctrl.dav.toolset.archivcheck-runtime.jar ^
  -Xmx768m ^
- de.bitctrl.dav.toolset.ArchivSizer ^
+ de.bitctrl.dav.toolset.archivcheck.ArchivSizer ^
  -datenverteiler=192.168.1.219:8083 ^
  -benutzer=vrz ^
  -authentifizierung=../../bin/dos/passwd ^
