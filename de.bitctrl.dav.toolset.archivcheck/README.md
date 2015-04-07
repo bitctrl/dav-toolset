@@ -1,14 +1,21 @@
-# Allgemeine Datenverteiler-Tools
+# Tool zur Analyse eines Datenverteilerarchivs
 
 Version: 0.0.2
 
 ## Übersicht
 
-Das Paket enthält kleine Tools zur Analyse des Datenverteilers.
-Eingebunden sind:
+Das Paket enthält ein Tool zur Analyse eines Datenverteiler-Archivs.
+Eingebunden ist:
 
-- ArchivSizer: ein Tool zur Größenanlyse eines Datenverteiler-Archivs auf Basis einer 
-  Filesystem-Analyse
+### ArchivSizer - ein Tool zur Größenanalyse auf Basis einer Filesystem-Analyse
+  
+Das Tool durchläuft ausgehend vom Root-Verzeichnis des Archivs das Dateisystems und rekonstruiert aus der Verzeichnisstruktur die Datenspezifikationen der im Archiv hinterlegten Daten.  
+Für jede Datenspezifikation wird die Anzahl der gespeicherten Dateien und die Gesamtgröße ermittelt.
+  
+Aufrufparameter sind neben den Standard-Datenverteiler-Parametern:
+
+- **-baseDir=<verzeichnis>** das Basisverzeichnis des Archivsystems (notwendig)
+- **-outputFile=<ausgabedatei>** die Ausgabedatei, Standardwert ist *archivsize.txt* (optional)
   
 ## Versionsgeschichte
 
