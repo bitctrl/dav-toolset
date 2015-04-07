@@ -2,7 +2,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>de.bitctrl.dav.toolset</groupId>
   <artifactId>de.bitctrl.dav.toolset.archivcheck</artifactId>
-  <version>0.0.2-SNAPSHOT</version>
+  <version>0.0.3-SNAPSHOT</version>
   
   
 	<name>Allgemeine Datenverteiler Tools</name>

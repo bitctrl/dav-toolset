@@ -60,7 +60,7 @@
 			<destName>${artifactId}-Lizenz.txt</destName>
 		</file>
 		<file>
-			<source>README.txt</source>
+			<source>README.md</source>
 			<outputDirectory>${artifactId}</outputDirectory>
 			<destName>${artifactId}-Build-Report.txt</destName>
 		</file>
