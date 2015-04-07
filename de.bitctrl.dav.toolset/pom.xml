@@ -1,7 +1,7 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
-  <groupId>de.bitctrl.dav</groupId>
-  <artifactId>de.bitctrl.dav.toolset</artifactId>
+  <groupId>de.bitctrl.dav.toolset</groupId>
+  <artifactId>de.bitctrl.dav.toolset.archivcheck</artifactId>
   <version>0.0.2-SNAPSHOT</version>
   
   
@@ -113,7 +113,7 @@
 									<customClasspathLayout>
 										../${artifact.artifactId}/${artifact.artifactId}-runtime.${artifact.extension}
 									</customClasspathLayout>
-									<mainClass>de.bitctrl.dav.toolset.ArchivSizer</mainClass>
+									<mainClass>de.bitctrl.dav.toolset.archivcheck.ArchivSizer</mainClass>
 								</manifest>
 								<manifestEntries>
 									<Class-Path>${project.artifactId}.jar</Class-Path>

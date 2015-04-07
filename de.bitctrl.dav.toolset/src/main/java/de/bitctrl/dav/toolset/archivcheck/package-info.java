@@ -25,5 +25,5 @@
  */
 
 /** Allgemeine Tools für die Arbeit mit Datenverteiler-Projekten. */
-package de.bitctrl.dav.toolset;
+package de.bitctrl.dav.toolset.archivcheck;
 

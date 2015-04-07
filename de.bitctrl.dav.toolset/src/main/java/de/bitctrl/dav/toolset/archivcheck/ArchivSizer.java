@@ -23,7 +23,7 @@
  * Phone: +49 341-490670
  * mailto: info@bitctrl.de
  */
-package de.bitctrl.dav.toolset;
+package de.bitctrl.dav.toolset.archivcheck;
 
 import java.io.File;
 import java.io.FileWriter;
