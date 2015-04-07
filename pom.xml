@@ -1,0 +1,27 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+	<modelVersion>4.0.0</modelVersion>
+
+	<groupId>de.bitctrl.dav</groupId>
+	<artifactId>de.bitctrl.dav</artifactId>
+	<version>1.0.0-SNAPSHOT</version>
+	<packaging>pom</packaging>
+
+	<name>DAV-Tools Master</name>
+
+	<organization>
+		<name>BitCtrl Systems GmbH</name>
+		<url>http://www.bitctrl.de</url>
+	</organization>
+
+	<properties>
+		<project.build.sourceEncoding>ISO-8859-1</project.build.sourceEncoding>
+		<project.reporting.outputEncoding>ISO-8859-1</project.reporting.outputEncoding>
+	</properties>
+
+	<modules>
+		<module>../de.bitctrl.dav.toolset</module>
+	</modules>
+
+</project>
