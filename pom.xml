@@ -21,7 +21,7 @@
 	</properties>
 
 	<modules>
-		<module>de.bitctrl.dav.toolset</module>
+		<module>de.bitctrl.dav.toolset.archivcheck</module>
 	</modules>
 
 </project>
