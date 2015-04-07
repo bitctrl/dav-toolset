@@ -5,7 +5,7 @@
   <version>0.0.3-SNAPSHOT</version>
   
   
-	<name>Allgemeine Datenverteiler Tools</name>
+	<name>Tool zur Analyse eines Datenverteilerarchivs</name>
 	<url>http://www.bitctrl.de</url>
 
 	<organization>
