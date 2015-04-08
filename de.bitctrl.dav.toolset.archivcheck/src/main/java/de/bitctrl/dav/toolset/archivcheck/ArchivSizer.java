@@ -35,6 +35,7 @@ import java.util.List;
 
 import de.bsvrz.dav.daf.main.ClientDavInterface;
 import de.bsvrz.dav.daf.main.config.DataModel;
+import de.bsvrz.dav.daf.main.config.SystemObject;
 import de.bsvrz.dav.daf.main.impl.InvalidArgumentException;
 import de.bsvrz.sys.funclib.application.StandardApplication;
 import de.bsvrz.sys.funclib.application.StandardApplicationRunner;
@@ -49,29 +50,51 @@ import de.bsvrz.sys.funclib.commandLineArgs.ArgumentList;
  */
 public class ArchivSizer implements StandardApplication {
 
-	private class ResultSet {
+	private static final String ASP_DIR_PREFIX = "asp";
+	private static final String OBJ_DIR_PREFIX = "obj";
+	private static final String ATG_DIR_PREFIX = "atg";
+
+	private static class ResultSet {
 		private final Object object;
 		private final Object atg;
 		private final Object aspect;
-		private final Size   size;
+		private final Size size;
 
-		public ResultSet(final Object object, final Object atg, final Object aspect, final Size size) {
+		public ResultSet(final Object object, final Object atg,
+				final Object aspect, final Size size) {
 			this.object = object;
 			this.atg = atg;
 			this.aspect = aspect;
 			this.size = size;
 		}
 
+		private boolean isValid() {
+			return (this.object instanceof SystemObject)
+					&& ((SystemObject) this.object).isValid();
+		}
+
+		private boolean isMissed() {
+			return !(this.object instanceof SystemObject);
+		}
+
+		/* (non-Javadoc)
+		 * @see java.lang.Object#toString()
+		 */
 		@Override
 		public String toString() {
-			return object + ";" + atg + ";" + aspect + " --> " + size.size
-					+ " Bytes (" + size.count + " Files)";
+			return "ResultSet [object=" + object + ", atg=" + atg + ", aspect="
+					+ aspect + ", size=" + size + "]";
 		}
 	}
 
 	private static class Size {
 		private long count;
 		private long size;
+
+		@Override
+		public String toString() {
+			return "Size [count=" + count + ", size=" + size + "]";
+		}
 	}
 
 	private String baseDir;
@@ -83,14 +106,16 @@ public class ArchivSizer implements StandardApplication {
 	private final List<ResultSet> results = new ArrayList<ResultSet>();
 
 	@Override
-	public void parseArguments(final ArgumentList argumentList) throws Exception {
+	public void parseArguments(final ArgumentList argumentList)
+			throws Exception {
 		baseDir = argumentList.fetchArgument("-baseDir").asString();
 		outputFile = argumentList.fetchArgument("-outputFile=archivsize.txt")
 				.asString();
 	}
 
 	@Override
-	public void initialize(final ClientDavInterface connection) throws Exception {
+	public void initialize(final ClientDavInterface connection)
+			throws Exception {
 
 		model = connection.getDataModel();
 
@@ -101,7 +126,7 @@ public class ArchivSizer implements StandardApplication {
 		}
 
 		for (final File child : startDir.listFiles()) {
-			if (child.getName().startsWith("obj")) {
+			if (child.getName().startsWith(ArchivSizer.OBJ_DIR_PREFIX)) {
 				parseObjEntry(child, "");
 			}
 		}
@@ -114,21 +139,53 @@ public class ArchivSizer implements StandardApplication {
 		});
 
 		final PrintWriter output = new PrintWriter(new FileWriter(outputFile));
+		printheader(output);
 		for (final ResultSet set : results) {
-			output.println(set);
+			printResult(output, set);
 		}
 		output.close();
 
 		System.exit(0);
 	}
 
+	private void printResult(final PrintWriter output, final ResultSet set) {
+
+		final StringBuffer result = new StringBuffer(200);
+		if (set.isMissed()) {
+			result.append('-');
+		} else if (!set.isValid()) {
+			result.append('*');
+		} else {
+			result.append(' ');
+		}
+
+		result.append(';');
+		result.append(set.object);
+		result.append(';');
+		result.append(set.atg);
+		result.append(';');
+		result.append(set.aspect);
+		result.append(';');
+		result.append(set.size.size);
+		result.append(';');
+		result.append(set.size.count);
+
+		output.println(result.toString());
+	}
+
+	private void printheader(final PrintWriter output) {
+		output.println("valid;objekt;attributgruppe;aspekt;size;count");
+	}
+
 	private void parseObjEntry(final File child, final String parentPath) {
-		final String path = parentPath + child.getName().substring(3);
+		final String path = parentPath
+				+ child.getName()
+				.substring(ArchivSizer.OBJ_DIR_PREFIX.length());
 
 		for (final File sub : child.listFiles()) {
-			if (sub.getName().startsWith("obj")) {
+			if (sub.getName().startsWith(ArchivSizer.OBJ_DIR_PREFIX)) {
 				parseObjEntry(sub, path);
-			} else if (sub.getName().startsWith("atg")) {
+			} else if (sub.getName().startsWith(ArchivSizer.ATG_DIR_PREFIX)) {
 				final Long longVal = Long.parseLong(path);
 				currentObject = model.getObject(longVal);
 				if (currentObject == null) {
@@ -140,12 +197,14 @@ public class ArchivSizer implements StandardApplication {
 	}
 
 	private void parseAtgEntry(final File child, final String parentPath) {
-		final String path = parentPath + child.getName().substring(3);
+		final String path = parentPath
+				+ child.getName()
+				.substring(ArchivSizer.ATG_DIR_PREFIX.length());
 
 		for (final File sub : child.listFiles()) {
-			if (sub.getName().startsWith("atg")) {
+			if (sub.getName().startsWith(ArchivSizer.ATG_DIR_PREFIX)) {
 				parseAtgEntry(sub, path);
-			} else if (sub.getName().startsWith("asp")) {
+			} else if (sub.getName().startsWith(ArchivSizer.ASP_DIR_PREFIX)) {
 				final Long longVal = Long.parseLong(path);
 				currentAtg = model.getObject(longVal);
 				if (currentAtg == null) {
@@ -157,10 +216,12 @@ public class ArchivSizer implements StandardApplication {
 	}
 
 	private void parseAspEntry(final File child, final String parentPath) {
-		final String path = parentPath + child.getName().substring(3);
+		final String path = parentPath
+				+ child.getName()
+				.substring(ArchivSizer.ASP_DIR_PREFIX.length());
 
 		for (final File sub : child.listFiles()) {
-			if (sub.getName().startsWith("asp")) {
+			if (sub.getName().startsWith(ArchivSizer.ASP_DIR_PREFIX)) {
 				parseAspEntry(sub, path);
 			} else {
 				final Long longVal = Long.parseLong(path);
@@ -169,10 +230,8 @@ public class ArchivSizer implements StandardApplication {
 					currentAspect = longVal;
 				}
 				final Size size = getSizeFor(sub);
-
 				results.add(new ResultSet(currentObject, currentAtg,
 						currentAspect, size));
-				System.err.println("Ermittelt: " + results.size());
 			}
 		}
 	}
@@ -197,16 +256,21 @@ public class ArchivSizer implements StandardApplication {
 	/**
 	 * Führt das Tool zur Bestimmung der Archivgröße aus.
 	 *
-	 * Ausgehend vom Wurzelverzeichnis des Archivs wird aus der Verzeichnis-Struktur die jeweilige Datenspezifikation ermittelt und die Anzahl und Größe der im jeweiligen Zweig befindlichen Daten zusammengefasst.
-	 * Das Ergebnis wird als Textdatei ausgegeben.
+	 * Ausgehend vom Wurzelverzeichnis des Archivs wird aus der
+	 * Verzeichnis-Struktur die jeweilige Datenspezifikation ermittelt und die
+	 * Anzahl und Größe der im jeweiligen Zweig befindlichen Daten
+	 * zusammengefasst. Das Ergebnis wird als Textdatei ausgegeben.
 	 *
 	 * Parameter sind neben den üblichen Datenverteiler-Parametern:
 	 * <ul>
-	 * <li><b>-baseDir=&lt;verzeichnis&gt;</b> das Basisverzeichnis des Archivsystems</li>
-	 * <li><b>-outputFile=&lt;ausgabedatei&gt;</b> die Ausgabedatei, Standardwert ist <i>archivsize.txt</i></li>
+	 * <li><b>-baseDir=&lt;verzeichnis&gt;</b> das Basisverzeichnis des
+	 * Archivsystems</li>
+	 * <li><b>-outputFile=&lt;ausgabedatei&gt;</b> die Ausgabedatei,
+	 * Standardwert ist <i>archivsize.txt</i></li>
 	 * </ul>
 	 *
-	 * @param args die Kommandozeilenparameter
+	 * @param args
+	 *            die Kommandozeilenparameter
 	 */
 	public static void main(final String[] args) {
 		StandardApplicationRunner.run(new ArchivSizer(), args);

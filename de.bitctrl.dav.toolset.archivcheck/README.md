@@ -1,6 +1,6 @@
 # Tool zur Analyse eines Datenverteilerarchivs
 
-Version: 0.0.2
+Version: 0.0.4
 
 ## Übersicht
 
@@ -16,6 +16,21 @@ Aufrufparameter sind neben den Standard-Datenverteiler-Parametern:
 
 - **-baseDir=<verzeichnis>** das Basisverzeichnis des Archivsystems (notwendig)
 - **-outputFile=<ausgabedatei>** die Ausgabedatei, Standardwert ist *archivsize.txt* (optional)
+  
+Die Ausgabe erfolgt als CSV-Datei mit Semikolon als Trenner im Format:
+
+    valid;objekt;attributgruppe;aspekt;size;count
+
+Valid wird markiert mit:
+
+- ***** für nicht ungültige Objekte (gültig in einer früheren Version) 
+- **-** für nicht vorhandene Objekte (die Konfiguration liefert für die ermittelte ID kein Objekt)
+- **<leer>** für gültige Objekte
+
+Die Einträge werden nach der Größe in Bytes absteigend sortiert ausgegeben.
+
+Für ungültige Objekte wird gegebenenfalls die ID ausgegeben. Das gilt auch für Aspekte und Attributgruppen.
+Die verschiedenen Datenarten und Simulationsvarianten werden nicht berücksichtigt.
   
 ## Versionsgeschichte
 
