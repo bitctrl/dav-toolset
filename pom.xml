@@ -221,22 +221,13 @@
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-assembly-plugin</artifactId>
 					<version>2.4</version>
-					<executions>
-						<execution>
-							<id>swe</id>
-							<goals>
-								<goal>single</goal>
-							</goals>
-							<phase>package</phase>
-							<configuration>
-								<finalName>SWE_${project.artifactId}_${project.status}_V${project.version}_D${project.standDatum}</finalName>
-								<appendAssemblyId>false</appendAssemblyId>
-								<descriptors>
-									<descriptor>src/main/assembly/swe.xml</descriptor>
-								</descriptors>
-							</configuration>
-						</execution>
-					</executions>
+					<configuration>
+						<finalName>SWE_${project.artifactId}_${project.status}_V${project.version}_D${project.standDatum}</finalName>
+						<appendAssemblyId>false</appendAssemblyId>
+						<descriptors>
+							<descriptor>src/main/assembly/swe.xml</descriptor>
+						</descriptors>
+					</configuration>
 				</plugin>
 			</plugins>
 		</pluginManagement>
