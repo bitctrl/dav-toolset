@@ -22,6 +22,7 @@
 
 	<modules>
 		<module>de.bitctrl.dav.toolset.archivcheck</module>
+		<module>de.bitctrl.dav.toolset.appanalyzer</module>
 	</modules>
 
 </project>
