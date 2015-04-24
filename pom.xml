@@ -143,13 +143,6 @@
 				<artifactId>maven-site-plugin</artifactId>
 				<version>3.4</version>
 			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-assembly-plugin</artifactId>
-				<configuration>
-					<skipAssembly>true</skipAssembly>
-				</configuration>
-			</plugin>
 		</plugins>
 
 		<pluginManagement>
@@ -234,6 +227,7 @@
 						<descriptors>
 							<descriptor>src/main/assembly/swe.xml</descriptor>
 						</descriptors>
+						<skipAssembly>true</skipAssembly>
 					</configuration>
 				</plugin>
 			</plugins>
