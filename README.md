@@ -1,4 +1,6 @@
-# dav-toolset
+
+# dav-toolset [![Build Status](https://travis-ci.org/bitctrl/dav-toolset.svg)](https://travis-ci.org/bitctrl/dav-toolset)
+
 Allgemeine Tools für den Datenverteiler
 
 Enthalten ist derzeit:
