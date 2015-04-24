@@ -1,11 +1,11 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <groupId>de.bitctrl.dav.toolset</groupId>
-  <artifactId>de.bitctrl.dav.toolset.archivcheck</artifactId>
-  <version>0.0.4-SNAPSHOT</version>
+  <artifactId>de.bitctrl.dav.toolset.appanalyzer</artifactId>
+  <version>0.0.1-SNAPSHOT</version>
   
   
-	<name>Tool zur Analyse eines Datenverteilerarchivs</name>
+	<name>Tool zur Analyse eines Datenverteilerapplikation</name>
 	<url>http://www.bitctrl.de</url>
 
 	<organization>
@@ -25,7 +25,7 @@
 		<project.reporting.outputEncoding>ISO-8859-1</project.reporting.outputEncoding>
 		<java.version>8</java.version>
 		<project.status>BETA</project.status>
-		<project.standDatum>2015-04-08</project.standDatum>
+		<project.standDatum>2015-04-24</project.standDatum>
 	</properties>
 
 	<repositories>
