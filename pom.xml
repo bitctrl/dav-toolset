@@ -227,7 +227,7 @@
 							<goals>
 								<goal>single</goal>
 							</goals>
-							<phase>verify</phase>
+							<phase>package</phase>
 							<configuration>
 								<finalName>SWE_${project.artifactId}_${project.status}_V${project.version}_D${project.standDatum}</finalName>
 								<appendAssemblyId>false</appendAssemblyId>
