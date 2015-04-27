@@ -1,3 +1,28 @@
+/*
+ * Allgemeine Datenverteiler-Tools
+ * Copyright (C) 2007-2015 BitCtrl Systems GmbH
+ *
+ * This project is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free
+ * Software Foundation; either version 2 of the License, or (at your option)
+ * any later version.
+ *
+ * This project is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE.  See the GNU Lesser General Public License for more
+ * details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this project; if not, write to the Free Software Foundation, Inc.,
+ * 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA.
+ *
+ * Contact Information:
+ * BitCtrl Systems GmbH
+ * Weiﬂenfelser Straﬂe 67
+ * 04229 Leipzig
+ * Phone: +49 341-490670
+ * mailto: info@bitctrl.de
+ */
 package de.bitctrl.dav.toolset.appanalyzer;
 
 import java.io.File;
@@ -25,6 +50,12 @@ import de.bsvrz.dav.daf.main.config.AttributeGroupUsage;
 import de.bsvrz.dav.daf.main.config.SystemObject;
 import de.bsvrz.dav.daf.main.config.SystemObjectType;
 
+/**
+ * Hintergrund-Thread mit dem der Datensatz mit den Anmeldedaten einer Liste von
+ * Applikationen in eine Datei exportiert wird.
+ *
+ * @author BitCtrl Systems GmbH, Uwe Peuker
+ */
 public class Exporter extends Thread {
 
 	private static class SummaryKey {
@@ -48,7 +79,8 @@ public class Exporter extends Thread {
 			int result = 1;
 			result = (prime * result) + ((asp == null) ? 0 : asp.hashCode());
 			result = (prime * result) + ((atg == null) ? 0 : atg.hashCode());
-			result = (prime * result) + ((rolle == null) ? 0 : rolle.hashCode());
+			result = (prime * result)
+					+ ((rolle == null) ? 0 : rolle.hashCode());
 			result = (prime * result) + ((type == null) ? 0 : type.hashCode());
 			return result;
 		}
@@ -98,12 +130,12 @@ public class Exporter extends Thread {
 
 	}
 
-	private final Set<SystemObject> exportApplications = new HashSet<SystemObject>();
+	private final Set<SystemObject> exportApplications = new HashSet<>();
 	private final File file;
 	private final DataDescription dataDescription;
 	private final ClientDavInterface dav;
 
-	public Exporter(final ClientDavInterface dav,
+	Exporter(final ClientDavInterface dav,
 			final JList<SystemObject> applicationList, final File file) {
 		exportApplications.addAll(applicationList.getSelectedValuesList());
 
@@ -119,14 +151,14 @@ public class Exporter extends Thread {
 	@Override
 	public void run() {
 
-		try (PrintWriter writer = new PrintWriter( new FileWriter(file))) {
+		try (PrintWriter writer = new PrintWriter(new FileWriter(file))) {
 
 			for (final SystemObject exportApp : exportApplications) {
 
 				final String appName = exportApp.toString();
 
 				writer.println(appName);
-				for( int idx = 0; idx < appName.length(); idx++) {
+				for (int idx = 0; idx < appName.length(); idx++) {
 					writer.print('=');
 				}
 				writer.println("\n\n");
@@ -151,7 +183,7 @@ public class Exporter extends Thread {
 					resultData = null;
 				}
 
-				if ( resultData == null ) {
+				if (resultData == null) {
 					writer.println("Anmeldedaten konnten nicht ermittelt werden!\n\n");
 				} else {
 					printResult(writer, resultData.getData());
@@ -161,15 +193,14 @@ public class Exporter extends Thread {
 			JOptionPane.showMessageDialog(
 					null,
 					"Ausgabedatei kann nicht angelegt werden!\n"
-							+ e.getLocalizedMessage(), "FEHLER", JOptionPane.ERROR_MESSAGE);
+							+ e.getLocalizedMessage(), "FEHLER",
+							JOptionPane.ERROR_MESSAGE);
 			e.printStackTrace();
 			return;
 		}
 
-		JOptionPane.showMessageDialog(
-				null,
-				"Ausgabedatei " + file + " abgeschlossen!\n"
-				, "INFO", JOptionPane.INFORMATION_MESSAGE);
+		JOptionPane.showMessageDialog(null, "Ausgabedatei " + file
+				+ " abgeschlossen!\n", "INFO", JOptionPane.INFORMATION_MESSAGE);
 	}
 
 	private void printResult(final PrintWriter writer, final Data data) {
@@ -178,7 +209,7 @@ public class Exporter extends Thread {
 			return;
 		}
 
-		final Map<SummaryKey, Long> summary = new HashMap<SummaryKey, Long>();
+		final Map<SummaryKey, Long> summary = new HashMap<>();
 
 		final Array feld = data.getArray("angemeldeteDatenidentifikation");
 		for (int idx = 0; idx < feld.getLength(); idx++) {
@@ -189,13 +220,14 @@ public class Exporter extends Thread {
 					.getSystemObject();
 			final SystemObjectType type = objekt.getType();
 			final AttributeGroupUsage verwendung = (AttributeGroupUsage) item
-					.getReferenceValue("attributgruppenverwendung").getSystemObject();
+					.getReferenceValue("attributgruppenverwendung")
+					.getSystemObject();
 			final AttributeGroup atg = verwendung.getAttributeGroup();
 			final Aspect asp = verwendung.getAspect();
 
 			final SummaryKey key = new SummaryKey(rolle, type, atg, asp);
 			final Long counter = summary.get(key);
-			if ( counter != null ) {
+			if (counter != null) {
 				summary.put(key, counter + 1);
 			} else {
 				summary.put(key, 1L);
@@ -207,9 +239,10 @@ public class Exporter extends Thread {
 		writer.println("\nZusammenfassung");
 		writer.println("===============\n");
 
-		for ( final Entry<SummaryKey, Long> entry : summary.entrySet() ) {
+		for (final Entry<SummaryKey, Long> entry : summary.entrySet()) {
 			final SummaryKey key = entry.getKey();
-			writer.println(key.rolle + ";" + key.type + ";" + key.atg + ";" + key.asp + ";" + entry.getValue());
+			writer.println(key.rolle + ";" + key.type + ";" + key.atg + ";"
+					+ key.asp + ";" + entry.getValue());
 		}
 
 		writer.println();

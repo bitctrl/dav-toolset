@@ -46,7 +46,6 @@ import de.bsvrz.sys.funclib.commandLineArgs.ArgumentList;
  * Tool zum Bestimmen der Größe eines Archivs im Filesystem.
  *
  * @author BitCtrl Systems GmbH, Uwe Peuker
- * @version $Id$
  */
 public class ArchivSizer implements StandardApplication {
 
