@@ -6,8 +6,8 @@ Allgemeine Tools für den Datenverteiler
 Enthalten ist derzeit:
 
 - **de.bitctrl.dav.toolset.archivcheck** ein Tool zum Bestimmen der Archivgröße über das Dateisystem und die Datenverteilerkonfiguration
-
 - **de.bitctrl.dav.toolset.appanalyzer** ein Tool zum Bestimmen der Anmeldungen einer aktiven Applikation in einem Datenverteilersystem
+- **de.bitctrl.dav.toolset.system** ein Tool zur initialen Versorgung der Parameterdatensätze für das Archiv und die Parametrierung eines Datenverteilersystems
 
 
-**Für den erfolgreichen Maven-Build müssen die erforderlichen Kernsoftware-Module auf einem Maven-Repository verfügbar sein und die pom-Files entsprechend angepasst werden!**
+**Für die erforderlichen Kernsoftware-Module wird auf das Maven-Repository http://falkoschumann.github.io/maven-repository/releases/ zurückgegriffen bis ein offizielles NERZ-Repository verfügbar ist!**
