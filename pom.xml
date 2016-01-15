@@ -45,6 +45,7 @@
 		<module>de.bitctrl.dav.toolset.archivcheck</module>
 		<module>de.bitctrl.dav.toolset.appanalyzer</module>
 		<module>de.bitctrl.dav.toolset.system</module>
+		<module>de.bitctrl.dav.toolset.kblister</module>
 	</modules>
 
 	<dependencyManagement>
