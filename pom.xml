@@ -228,7 +228,7 @@
 						<descriptors>
 							<descriptor>src/main/assembly/swe.xml</descriptor>
 						</descriptors>
-						<skipAssembly>true</skipAssembly>
+						<skipAssembly>false</skipAssembly>
 					</configuration>
 				</plugin>
 			</plugins>
