@@ -30,11 +30,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.SortedSet;
 import java.util.TreeMap;
 import java.util.TreeSet;
 
 import de.bitctrl.dav.toolset.kblister.KbLister.PidComparator;
 import de.bsvrz.dav.daf.main.ClientDavInterface;
+import de.bsvrz.dav.daf.main.Data;
 import de.bsvrz.dav.daf.main.config.ConfigurationArea;
 import de.bsvrz.dav.daf.main.config.DataModel;
 import de.bsvrz.dav.daf.main.config.SystemObject;
@@ -70,13 +72,22 @@ public class KbLister implements StandardApplication {
 	public void initialize(final ClientDavInterface connection) throws Exception {
 
 		DataModel model = connection.getDataModel();
+		Set<ConfigurationArea> allKbSortedPerPid = new TreeSet<>(new Comparator<ConfigurationArea>() {
+
+			@Override
+			public int compare(ConfigurationArea o1, ConfigurationArea o2) {
+				return o1.getPid().compareTo(o2.getPid());
+			}
+		});
 
 		for (SystemObject obj : model.getTypeTypeObject().getElements()) {
 			SystemObjectType type = (SystemObjectType) obj;
 			TreeSet<ConfigurationArea> kbs = new TreeSet<ConfigurationArea>(new PidComparator());
 
 			for (SystemObject element : type.getElements()) {
-				kbs.add(element.getConfigurationArea());
+				ConfigurationArea configurationArea = element.getConfigurationArea();
+				kbs.add(configurationArea);
+				allKbSortedPerPid.add(configurationArea);
 			}
 
 			results.put(type, kbs);
@@ -91,6 +102,16 @@ public class KbLister implements StandardApplication {
 			}
 		}
 
+		for (ConfigurationArea kb : allKbSortedPerPid) {
+			Data data = kb.getConfigurationData(kb.getDataModel().getAttributeGroup("atg.konfigurationsBereich‹bernahmeInformationen"));
+			if ( data != null)  {
+				System.err.println(kb + ": " + data.getUnscaledValue("aktivierbareVersion").longValue());
+			} else {
+				System.err.println(kb + ": keine Version ermittelbar");
+			}
+		}
+
+		
 		System.exit(0);
 	}
 
