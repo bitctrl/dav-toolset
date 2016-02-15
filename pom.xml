@@ -46,6 +46,7 @@
 		<module>de.bitctrl.dav.toolset.appanalyzer</module>
 		<module>de.bitctrl.dav.toolset.system</module>
 		<module>de.bitctrl.dav.toolset.kblister</module>
+		<module>de.bitctrl.dav.toolset.swelister</module>
 	</modules>
 
 	<dependencyManagement>

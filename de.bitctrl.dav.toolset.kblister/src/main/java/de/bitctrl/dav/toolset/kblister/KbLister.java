@@ -37,6 +37,11 @@ import java.util.TreeSet;
 import de.bitctrl.dav.toolset.kblister.KbLister.PidComparator;
 import de.bsvrz.dav.daf.main.ClientDavInterface;
 import de.bsvrz.dav.daf.main.Data;
+import de.bsvrz.dav.daf.main.Data.Array;
+import de.bsvrz.dav.daf.main.DataDescription;
+import de.bsvrz.dav.daf.main.ResultData;
+import de.bsvrz.dav.daf.main.config.Aspect;
+import de.bsvrz.dav.daf.main.config.AttributeGroup;
 import de.bsvrz.dav.daf.main.config.ConfigurationArea;
 import de.bsvrz.dav.daf.main.config.DataModel;
 import de.bsvrz.dav.daf.main.config.SystemObject;
@@ -72,6 +77,7 @@ public class KbLister implements StandardApplication {
 	public void initialize(final ClientDavInterface connection) throws Exception {
 
 		DataModel model = connection.getDataModel();
+
 		Set<ConfigurationArea> allKbSortedPerPid = new TreeSet<>(new Comparator<ConfigurationArea>() {
 
 			@Override
@@ -95,23 +101,27 @@ public class KbLister implements StandardApplication {
 
 		for (Entry<SystemObjectType, Set<ConfigurationArea>> result : results.entrySet()) {
 			if (!result.getValue().isEmpty()) {
-				System.err.println(result.getKey());
+				System.out.println(result.getKey());
 				for (ConfigurationArea kb : result.getValue()) {
-					System.err.println("\t" + kb.getPid());
+					System.out.println("\t" + kb.getPid());
 				}
 			}
 		}
 
+		System.out.println("\n\nListe der Konfigurationsbereiche");
+		System.out.println("================================\n");
+		
 		for (ConfigurationArea kb : allKbSortedPerPid) {
-			Data data = kb.getConfigurationData(kb.getDataModel().getAttributeGroup("atg.konfigurationsBereich‹bernahmeInformationen"));
-			if ( data != null)  {
-				System.err.println(kb + ": " + data.getUnscaledValue("aktivierbareVersion").longValue());
+			Data data = kb.getConfigurationData(
+					kb.getDataModel().getAttributeGroup("atg.konfigurationsBereich‹bernahmeInformationen"));
+			if (data != null) {
+				System.out.println(kb.getPid() + "\t" + kb.getNameOrPidOrId() + "\t" + ": "
+						+ data.getUnscaledValue("aktivierbareVersion").longValue());
 			} else {
-				System.err.println(kb + ": keine Version ermittelbar");
+				System.out.println(kb.getPid() + "\t" + kb.getNameOrPidOrId() + "\t" + ": keine Version ermittelbar");
 			}
 		}
 
-		
 		System.exit(0);
 	}
 
