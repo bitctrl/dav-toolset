@@ -36,8 +36,8 @@ public class SweLister {
 	}
 
 	private void run() {
-		System.err.println("Prüfe SWE-Versionen");
-		System.err.println("===========================================\n");
+		System.out.println("Prüfe SWE-Versionen");
+		System.out.println("===========================================\n");
 
 		if (baseDir == null) {
 			System.err.println(
@@ -48,7 +48,7 @@ public class SweLister {
 		final File root = new File(baseDir);
 		listJars(root, true);
 
-		System.err.println("\nPrüfung abgeschlossen\n");
+		System.out.println("\nPrüfung abgeschlossen\n");
 
 	}
 
@@ -69,7 +69,7 @@ public class SweLister {
 								continue;
 							}
 
-							System.err.print(file.getName());
+							System.out.print(file.getName());
 							try (JarFile jar = new JarFile(file)) {
 								final Manifest manifest = jar.getManifest();
 								final Attributes attributes = manifest.getMainAttributes();
@@ -77,9 +77,9 @@ public class SweLister {
 								if (value == null) {
 									listVersionFile(file);
 								} else {
-									System.err.print("\t" + value);
-									System.err.print("\t\"" + attributes.getValue("Implementation-Version") + "\"");
-									System.err.println("\tMANIFEST");
+									System.out.print("\t" + value);
+									System.out.print("\t\"" + attributes.getValue("Implementation-Version") + "\"");
+									System.out.println("\tMANIFEST");
 								}
 							} catch (final IOException e) {
 								// TODO Auto-generated catch block
@@ -121,7 +121,7 @@ public class SweLister {
 			if (packageItem != null) {
 				sweName = packageItem.getAttribute("name");
 			}
-			System.err.print("\t" + sweName);
+			System.out.print("\t" + sweName);
 
 			String version = "";
 			final NodeList versionElements = packageItem.getElementsByTagName("version");
@@ -131,7 +131,7 @@ public class SweLister {
 					version = versionElement.getAttribute("number");
 				}
 			}
-			System.err.println("\t\"" + version + "\"\t" + infoFile.getName());
+			System.out.println("\t\"" + version + "\"\t" + infoFile.getName());
 
 			return;
 		}
@@ -153,11 +153,11 @@ public class SweLister {
 					}
 				}
 			}
-			System.err.println("\t\t\"" + version + "\"\t" + infoFile.getName());
+			System.out.println("\t\t\"" + version + "\"\t" + infoFile.getName());
 			return;
 		}
 
-		System.err.println();
+		System.out.println();
 	}
 
 }
