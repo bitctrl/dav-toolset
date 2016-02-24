@@ -58,13 +58,15 @@ public class ArchivSizer implements StandardApplication {
 		private final Object atg;
 		private final Object aspect;
 		private final Size size;
+		private final File sub;
 
 		public ResultSet(final Object object, final Object atg,
-				final Object aspect, final Size size) {
+				final Object aspect, final Size size, final File sub) {
 			this.object = object;
 			this.atg = atg;
 			this.aspect = aspect;
 			this.size = size;
+			this.sub = sub;
 		}
 
 		private boolean isValid() {
@@ -82,7 +84,7 @@ public class ArchivSizer implements StandardApplication {
 		@Override
 		public String toString() {
 			return "ResultSet [object=" + object + ", atg=" + atg + ", aspect="
-					+ aspect + ", size=" + size + "]";
+					+ aspect + ", size=" + size + ", sub" + sub + "]";
 		}
 	}
 
@@ -168,12 +170,14 @@ public class ArchivSizer implements StandardApplication {
 		result.append(set.size.size);
 		result.append(';');
 		result.append(set.size.count);
+		result.append(';');
+		result.append(set.sub.getAbsolutePath());
 
 		output.println(result.toString());
 	}
 
 	private void printheader(final PrintWriter output) {
-		output.println("valid;objekt;attributgruppe;aspekt;size;count");
+		output.println("valid;objekt;attributgruppe;aspekt;size;count;path");
 	}
 
 	private void parseObjEntry(final File child, final String parentPath) {
@@ -230,7 +234,7 @@ public class ArchivSizer implements StandardApplication {
 				}
 				final Size size = getSizeFor(sub);
 				results.add(new ResultSet(currentObject, currentAtg,
-						currentAspect, size));
+						currentAspect, size, sub));
 			}
 		}
 	}
