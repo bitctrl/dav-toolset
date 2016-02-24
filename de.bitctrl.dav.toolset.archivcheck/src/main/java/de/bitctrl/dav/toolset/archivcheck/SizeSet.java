@@ -2,10 +2,18 @@ package de.bitctrl.dav.toolset.archivcheck;
 
 class SizeSet {
 
+	private long setCount;
+	public long getSetCount() {
+		return setCount;
+	}
+	
+	void incSetCount() {
+		setCount++;
+	}
+
 	private long count;
 	private long idxSize;
 	private long datSize;
-
 	private long otherSize;
 
 	public SizeSet() {

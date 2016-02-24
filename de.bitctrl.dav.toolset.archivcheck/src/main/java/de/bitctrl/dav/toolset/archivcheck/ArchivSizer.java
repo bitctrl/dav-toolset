@@ -28,6 +28,7 @@ package de.bitctrl.dav.toolset.archivcheck;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.PrintWriter;
+import java.io.RandomAccessFile;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -190,6 +191,8 @@ public class ArchivSizer implements StandardApplication {
 
 	private void printAkkResult(PrintWriter output, AkkumulationKey key, SizeSet value) {
 		final StringBuffer result = new StringBuffer(200);
+		result.append(value.getSetCount());
+		result.append(';');
 		result.append(key.getAtg());
 		result.append(';');
 		result.append(key.getAsp());
@@ -210,7 +213,7 @@ public class ArchivSizer implements StandardApplication {
 	}
 
 	private void printAkkHeader(final PrintWriter output) {
-		output.println("attributgruppe;aspekt;size;datsize;idxsize;othersize;datsizerel;count");
+		output.println("objekte;attributgruppe;aspekt;size;datsize;idxsize;othersize;datsizerel;count");
 	}
 
 	private void parseObjEntry(final File child, final String parentPath) {
@@ -275,6 +278,7 @@ public class ArchivSizer implements StandardApplication {
 			akkumulation.put(akkumulationKey, sizeSet);
 		}
 		sizeSet.add(resultSet.size);
+		sizeSet.incSetCount();
 	}
 
 	private SizeSet getSizeFor(final File child) {
