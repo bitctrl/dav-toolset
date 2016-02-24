@@ -32,6 +32,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import de.bsvrz.dav.daf.main.ClientDavInterface;
 import de.bsvrz.dav.daf.main.config.DataModel;
@@ -57,11 +59,11 @@ public class ArchivSizer implements StandardApplication {
 		private final Object object;
 		private final Object atg;
 		private final Object aspect;
-		private final Size size;
+		private final SizeSet size;
 		private final File sub;
 
 		public ResultSet(final Object object, final Object atg,
-				final Object aspect, final Size size, final File sub) {
+				final Object aspect, final SizeSet size, final File sub) {
 			this.object = object;
 			this.atg = atg;
 			this.aspect = aspect;
@@ -88,29 +90,23 @@ public class ArchivSizer implements StandardApplication {
 		}
 	}
 
-	private static class Size {
-		private long count;
-		private long size;
-
-		@Override
-		public String toString() {
-			return "Size [count=" + count + ", size=" + size + "]";
-		}
-	}
-
 	private String baseDir;
 	private String outputFile;
+	private String akkFile;
 	private Object currentObject;
 	private DataModel model;
 	private Object currentAtg;
 
 	private final List<ResultSet> results = new ArrayList<ResultSet>();
+	private Map<AkkumulationKey, SizeSet> akkumulation;
 
 	@Override
 	public void parseArguments(final ArgumentList argumentList)
 			throws Exception {
 		baseDir = argumentList.fetchArgument("-baseDir").asString();
-		outputFile = argumentList.fetchArgument("-outputFile=archivsize.txt")
+		outputFile = argumentList.fetchArgument("-outputFile=archivsize.csv")
+				.asString();
+		akkFile = argumentList.fetchArgument("-akkFile=archivsize_akk.csv")
 				.asString();
 	}
 
@@ -135,19 +131,27 @@ public class ArchivSizer implements StandardApplication {
 		Collections.sort(results, new Comparator<ResultSet>() {
 			@Override
 			public int compare(final ResultSet o1, final ResultSet o2) {
-				return ((Long) o2.size.size).compareTo(o1.size.size);
+				return ((Long) o2.size.getSize()).compareTo(o1.size.getSize());
 			}
 		});
 
-		final PrintWriter output = new PrintWriter(new FileWriter(outputFile));
+		PrintWriter output = new PrintWriter(new FileWriter(outputFile));
 		printheader(output);
 		for (final ResultSet set : results) {
 			printResult(output, set);
 		}
 		output.close();
 
+		output = new PrintWriter(new FileWriter(akkFile));
+		printAkkHeader(output);
+		for (final Entry<AkkumulationKey, SizeSet> entry : akkumulation.entrySet()) {
+			printAkkResult(output, entry.getKey(), entry.getValue());
+		}
+		output.close();
+		
 		System.exit(0);
 	}
+
 
 	private void printResult(final PrintWriter output, final ResultSet set) {
 
@@ -167,9 +171,9 @@ public class ArchivSizer implements StandardApplication {
 		result.append(';');
 		result.append(set.aspect);
 		result.append(';');
-		result.append(set.size.size);
+		result.append(set.size.getSize());
 		result.append(';');
-		result.append(set.size.count);
+		result.append(set.size.getCount());
 		result.append(';');
 		result.append(set.sub.getAbsolutePath());
 
@@ -180,6 +184,24 @@ public class ArchivSizer implements StandardApplication {
 		output.println("valid;objekt;attributgruppe;aspekt;size;count;path");
 	}
 
+	private void printAkkResult(PrintWriter output, AkkumulationKey key, SizeSet value) {
+		final StringBuffer result = new StringBuffer(200);
+		result.append(key.getAtg());
+		result.append(';');
+		result.append(key.getAsp());
+		result.append(';');
+		result.append(value.getSize());
+		result.append(';');
+		result.append(value.getCount());
+
+		output.println(result.toString());
+	}
+
+	private void printAkkHeader(final PrintWriter output) {
+		output.println("attributgruppe;aspekt;size;count");
+	}
+
+	
 	private void parseObjEntry(final File child, final String parentPath) {
 		final String path = parentPath
 				+ child.getName()
@@ -232,26 +254,36 @@ public class ArchivSizer implements StandardApplication {
 				if (currentAspect == null) {
 					currentAspect = longVal;
 				}
-				final Size size = getSizeFor(sub);
-				results.add(new ResultSet(currentObject, currentAtg,
-						currentAspect, size, sub));
+				final SizeSet size = getSizeFor(sub);
+				ResultSet resultSet = new ResultSet(currentObject, currentAtg,
+						currentAspect, size, sub);
+				results.add(resultSet);
+				akkumulate(resultSet);
 			}
 		}
 	}
 
-	private Size getSizeFor(final File child) {
+	private void akkumulate(ResultSet resultSet) {
+		AkkumulationKey akkumulationKey = new AkkumulationKey(resultSet.atg, resultSet.aspect);
+		SizeSet sizeSet = akkumulation.get(akkumulationKey);
+		if ( sizeSet == null) {
+			sizeSet = new SizeSet();
+			akkumulation.put(akkumulationKey, sizeSet);
+		}
+		sizeSet.add(resultSet.size);
+	}
 
-		final Size result = new Size();
+	private SizeSet getSizeFor(final File child) {
+
+		final SizeSet result = new SizeSet();
 
 		if (child.isDirectory()) {
 			for (final File sub : child.listFiles()) {
-				final Size dirSize = getSizeFor(sub);
-				result.count += dirSize.count;
-				result.size += dirSize.size;
+				final SizeSet dirSize = getSizeFor(sub);
+				result.add(dirSize);
 			}
 		} else {
-			result.count = 1;
-			result.size = child.length();
+			result.add(new SizeSet(1, child.length()));
 		}
 		return result;
 	}
