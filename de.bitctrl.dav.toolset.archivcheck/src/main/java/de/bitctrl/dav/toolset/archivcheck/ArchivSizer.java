@@ -63,8 +63,8 @@ public class ArchivSizer implements StandardApplication {
 		private final SizeSet size;
 		private final File sub;
 
-		public ResultSet(final Object object, final Object atg,
-				final Object aspect, final SizeSet size, final File sub) {
+		public ResultSet(final Object object, final Object atg, final Object aspect, final SizeSet size,
+				final File sub) {
 			this.object = object;
 			this.atg = atg;
 			this.aspect = aspect;
@@ -73,21 +73,22 @@ public class ArchivSizer implements StandardApplication {
 		}
 
 		private boolean isValid() {
-			return (this.object instanceof SystemObject)
-					&& ((SystemObject) this.object).isValid();
+			return (this.object instanceof SystemObject) && ((SystemObject) this.object).isValid();
 		}
 
 		private boolean isMissed() {
 			return !(this.object instanceof SystemObject);
 		}
 
-		/* (non-Javadoc)
+		/*
+		 * (non-Javadoc)
+		 * 
 		 * @see java.lang.Object#toString()
 		 */
 		@Override
 		public String toString() {
-			return "ResultSet [object=" + object + ", atg=" + atg + ", aspect="
-					+ aspect + ", size=" + size + ", sub" + sub + "]";
+			return "ResultSet [object=" + object + ", atg=" + atg + ", aspect=" + aspect + ", size=" + size + ", sub"
+					+ sub + "]";
 		}
 	}
 
@@ -102,25 +103,20 @@ public class ArchivSizer implements StandardApplication {
 	private Map<AkkumulationKey, SizeSet> akkumulation = new LinkedHashMap<>();
 
 	@Override
-	public void parseArguments(final ArgumentList argumentList)
-			throws Exception {
+	public void parseArguments(final ArgumentList argumentList) throws Exception {
 		baseDir = argumentList.fetchArgument("-baseDir").asString();
-		outputFile = argumentList.fetchArgument("-outputFile=archivsize.csv")
-				.asString();
-		akkFile = argumentList.fetchArgument("-akkFile=archivsize_akk.csv")
-				.asString();
+		outputFile = argumentList.fetchArgument("-outputFile=archivsize.csv").asString();
+		akkFile = argumentList.fetchArgument("-akkFile=archivsize_akk.csv").asString();
 	}
 
 	@Override
-	public void initialize(final ClientDavInterface connection)
-			throws Exception {
+	public void initialize(final ClientDavInterface connection) throws Exception {
 
 		model = connection.getDataModel();
 
 		final File startDir = new File(baseDir);
 		if (!startDir.isDirectory()) {
-			throw new InvalidArgumentException(baseDir
-					+ " ist kein Verzeichnis");
+			throw new InvalidArgumentException(baseDir + " ist kein Verzeichnis");
 		}
 
 		for (final File child : startDir.listFiles()) {
@@ -149,10 +145,9 @@ public class ArchivSizer implements StandardApplication {
 			printAkkResult(output, entry.getKey(), entry.getValue());
 		}
 		output.close();
-		
+
 		System.exit(0);
 	}
-
 
 	private void printResult(final PrintWriter output, final ResultSet set) {
 
@@ -174,6 +169,14 @@ public class ArchivSizer implements StandardApplication {
 		result.append(';');
 		result.append(set.size.getSize());
 		result.append(';');
+		result.append(set.size.getDatSize());
+		result.append(';');
+		result.append(set.size.getIdxSize());
+		result.append(';');
+		result.append(set.size.getOtherSize());
+		result.append(';');
+		result.append(set.size.getDatRelation());
+		result.append(';');
 		result.append(set.size.getCount());
 		result.append(';');
 		result.append(set.sub.getAbsolutePath());
@@ -182,7 +185,7 @@ public class ArchivSizer implements StandardApplication {
 	}
 
 	private void printheader(final PrintWriter output) {
-		output.println("valid;objekt;attributgruppe;aspekt;size;count;path");
+		output.println("valid;objekt;attributgruppe;aspekt;size;datsize;idxsize;othersize;datsizerel;count;path");
 	}
 
 	private void printAkkResult(PrintWriter output, AkkumulationKey key, SizeSet value) {
@@ -193,20 +196,25 @@ public class ArchivSizer implements StandardApplication {
 		result.append(';');
 		result.append(value.getSize());
 		result.append(';');
+		result.append(value.getDatSize());
+		result.append(';');
+		result.append(value.getIdxSize());
+		result.append(';');
+		result.append(value.getOtherSize());
+		result.append(';');
+		result.append(value.getDatRelation());
+		result.append(';');
 		result.append(value.getCount());
 
 		output.println(result.toString());
 	}
 
 	private void printAkkHeader(final PrintWriter output) {
-		output.println("attributgruppe;aspekt;size;count");
+		output.println("attributgruppe;aspekt;size;datsize;idxsize;othersize;datsizerel;count");
 	}
 
-	
 	private void parseObjEntry(final File child, final String parentPath) {
-		final String path = parentPath
-				+ child.getName()
-				.substring(ArchivSizer.OBJ_DIR_PREFIX.length());
+		final String path = parentPath + child.getName().substring(ArchivSizer.OBJ_DIR_PREFIX.length());
 
 		for (final File sub : child.listFiles()) {
 			if (sub.getName().startsWith(ArchivSizer.OBJ_DIR_PREFIX)) {
@@ -223,9 +231,7 @@ public class ArchivSizer implements StandardApplication {
 	}
 
 	private void parseAtgEntry(final File child, final String parentPath) {
-		final String path = parentPath
-				+ child.getName()
-				.substring(ArchivSizer.ATG_DIR_PREFIX.length());
+		final String path = parentPath + child.getName().substring(ArchivSizer.ATG_DIR_PREFIX.length());
 
 		for (final File sub : child.listFiles()) {
 			if (sub.getName().startsWith(ArchivSizer.ATG_DIR_PREFIX)) {
@@ -242,9 +248,7 @@ public class ArchivSizer implements StandardApplication {
 	}
 
 	private void parseAspEntry(final File child, final String parentPath) {
-		final String path = parentPath
-				+ child.getName()
-				.substring(ArchivSizer.ASP_DIR_PREFIX.length());
+		final String path = parentPath + child.getName().substring(ArchivSizer.ASP_DIR_PREFIX.length());
 
 		for (final File sub : child.listFiles()) {
 			if (sub.getName().startsWith(ArchivSizer.ASP_DIR_PREFIX)) {
@@ -256,8 +260,7 @@ public class ArchivSizer implements StandardApplication {
 					currentAspect = longVal;
 				}
 				final SizeSet size = getSizeFor(sub);
-				ResultSet resultSet = new ResultSet(currentObject, currentAtg,
-						currentAspect, size, sub);
+				ResultSet resultSet = new ResultSet(currentObject, currentAtg, currentAspect, size, sub);
 				results.add(resultSet);
 				akkumulate(resultSet);
 			}
@@ -267,7 +270,7 @@ public class ArchivSizer implements StandardApplication {
 	private void akkumulate(ResultSet resultSet) {
 		AkkumulationKey akkumulationKey = new AkkumulationKey(resultSet.atg, resultSet.aspect);
 		SizeSet sizeSet = akkumulation.get(akkumulationKey);
-		if ( sizeSet == null) {
+		if (sizeSet == null) {
 			sizeSet = new SizeSet();
 			akkumulation.put(akkumulationKey, sizeSet);
 		}
@@ -284,7 +287,13 @@ public class ArchivSizer implements StandardApplication {
 				result.add(dirSize);
 			}
 		} else {
-			result.add(new SizeSet(1, child.length()));
+			if (child.getName().endsWith(".dat")) {
+				result.add(new SizeSet(1, 0, child.length(), 0));
+			} else if (child.getName().endsWith(".idx")) {
+				result.add(new SizeSet(1, child.length(), 0, 0));
+			} else {
+				result.add(new SizeSet(1, 0, 0, child.length()));
+			}
 		}
 		return result;
 	}
