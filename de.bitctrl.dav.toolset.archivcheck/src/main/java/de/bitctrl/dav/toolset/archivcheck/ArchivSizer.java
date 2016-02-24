@@ -31,6 +31,7 @@ import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -98,7 +99,7 @@ public class ArchivSizer implements StandardApplication {
 	private Object currentAtg;
 
 	private final List<ResultSet> results = new ArrayList<ResultSet>();
-	private Map<AkkumulationKey, SizeSet> akkumulation;
+	private Map<AkkumulationKey, SizeSet> akkumulation = new LinkedHashMap<>();
 
 	@Override
 	public void parseArguments(final ArgumentList argumentList)
