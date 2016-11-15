@@ -65,8 +65,7 @@ public class Exporter extends Thread {
 		private final AttributeGroup atg;
 		private final Aspect asp;
 
-		public SummaryKey(final String rolle, final SystemObjectType type,
-				final AttributeGroup atg, final Aspect asp) {
+		public SummaryKey(final String rolle, final SystemObjectType type, final AttributeGroup atg, final Aspect asp) {
 			this.rolle = rolle;
 			this.type = type;
 			this.atg = atg;
@@ -79,8 +78,7 @@ public class Exporter extends Thread {
 			int result = 1;
 			result = (prime * result) + ((asp == null) ? 0 : asp.hashCode());
 			result = (prime * result) + ((atg == null) ? 0 : atg.hashCode());
-			result = (prime * result)
-					+ ((rolle == null) ? 0 : rolle.hashCode());
+			result = (prime * result) + ((rolle == null) ? 0 : rolle.hashCode());
 			result = (prime * result) + ((type == null) ? 0 : type.hashCode());
 			return result;
 		}
@@ -134,16 +132,17 @@ public class Exporter extends Thread {
 	private final File file;
 	private final DataDescription dataDescription;
 	private final ClientDavInterface dav;
+	private boolean onlySummary;
 
-	Exporter(final ClientDavInterface dav,
-			final JList<SystemObject> applicationList, final File file) {
+	Exporter(final ClientDavInterface dav, final JList<SystemObject> applicationList, final File file,
+			final boolean onlySummary) {
 		exportApplications.addAll(applicationList.getSelectedValuesList());
 
 		this.file = file;
 		this.dav = dav;
+		this.onlySummary = onlySummary;
 
-		final AttributeGroup atg = dav.getDataModel().getAttributeGroup(
-				"atg.angemeldeteDatenidentifikationen");
+		final AttributeGroup atg = dav.getDataModel().getAttributeGroup("atg.angemeldeteDatenidentifikationen");
 		final Aspect aspect = dav.getDataModel().getAspect("asp.standard");
 		this.dataDescription = new DataDescription(atg, aspect);
 	}
@@ -156,6 +155,7 @@ public class Exporter extends Thread {
 			for (final SystemObject exportApp : exportApplications) {
 
 				final String appName = exportApp.toString();
+				System.err.println("Exportiere Anmeldungen für: " + appName);
 
 				writer.println(appName);
 				for (int idx = 0; idx < appName.length(); idx++) {
@@ -168,12 +168,25 @@ public class Exporter extends Thread {
 				int versuche = 0;
 				ResultData resultData = null;
 				while (versuche < 10) {
+
+					if (versuche > 0) {
+						System.err.println("\tVersuch: " + versuche);
+					}
+
 					resultData = dav.getData(exportApp, dataDescription, 0);
-					if (resultData.hasData()
-							&& ((resultData.getDataTime() - startTime) < TimeUnit.MINUTES
-									.toMillis(1))) {
+
+					long dataAgeInMs = 0;
+
+					if (!resultData.hasData()) {
+						System.err.println("\tKeine Daten abrufbar");
+					} else {
+						dataAgeInMs = resultData.getDataTime() - startTime;
+						System.err.println("Alter der Daten: " + dataAgeInMs + " ms");
+					}
+					if (resultData.hasData() && ((dataAgeInMs > 0) && (dataAgeInMs < TimeUnit.MINUTES.toMillis(1)))) {
 						break;
 					}
+
 					try {
 						Thread.sleep(10000);
 					} catch (final InterruptedException ex) {
@@ -190,17 +203,14 @@ public class Exporter extends Thread {
 				}
 			}
 		} catch (final IOException e) {
-			JOptionPane.showMessageDialog(
-					null,
-					"Ausgabedatei kann nicht angelegt werden!\n"
-							+ e.getLocalizedMessage(), "FEHLER",
-							JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(null, "Ausgabedatei kann nicht angelegt werden!\n" + e.getLocalizedMessage(),
+					"FEHLER", JOptionPane.ERROR_MESSAGE);
 			e.printStackTrace();
 			return;
 		}
 
-		JOptionPane.showMessageDialog(null, "Ausgabedatei " + file
-				+ " abgeschlossen!\n", "INFO", JOptionPane.INFORMATION_MESSAGE);
+		JOptionPane.showMessageDialog(null, "Ausgabedatei " + file + " abgeschlossen!\n", "INFO",
+				JOptionPane.INFORMATION_MESSAGE);
 	}
 
 	private void printResult(final PrintWriter writer, final Data data) {
@@ -212,16 +222,15 @@ public class Exporter extends Thread {
 		final Map<SummaryKey, Long> summary = new HashMap<>();
 
 		final Array feld = data.getArray("angemeldeteDatenidentifikation");
+		System.err.println("\tPrüfe: " + feld.getLength() + " Spezifikationen");
 		for (int idx = 0; idx < feld.getLength(); idx++) {
 			final Data item = feld.getItem(idx);
 
 			final String rolle = item.getTextValue("rolle").getText();
-			final SystemObject objekt = item.getReferenceValue("objekt")
-					.getSystemObject();
+			final SystemObject objekt = item.getReferenceValue("objekt").getSystemObject();
 			final SystemObjectType type = objekt.getType();
 			final AttributeGroupUsage verwendung = (AttributeGroupUsage) item
-					.getReferenceValue("attributgruppenverwendung")
-					.getSystemObject();
+					.getReferenceValue("attributgruppenverwendung").getSystemObject();
 			final AttributeGroup atg = verwendung.getAttributeGroup();
 			final Aspect asp = verwendung.getAspect();
 
@@ -233,7 +242,13 @@ public class Exporter extends Thread {
 				summary.put(key, 1L);
 			}
 
-			writer.println(rolle + ";" + objekt + ";" + atg + ";" + asp);
+			if (!onlySummary) {
+				writer.println(rolle + ";" + objekt + ";" + atg + ";" + asp);
+			} else {
+				if (idx % 100 == 1) {
+					System.err.println("\tGeprüft: " + idx);
+				}
+			}
 		}
 
 		writer.println("\nZusammenfassung");
@@ -241,8 +256,7 @@ public class Exporter extends Thread {
 
 		for (final Entry<SummaryKey, Long> entry : summary.entrySet()) {
 			final SummaryKey key = entry.getKey();
-			writer.println(key.rolle + ";" + key.type + ";" + key.atg + ";"
-					+ key.asp + ";" + entry.getValue());
+			writer.println(key.rolle + ";" + key.type + ";" + key.atg + ";" + key.asp + ";" + entry.getValue());
 		}
 
 		writer.println();

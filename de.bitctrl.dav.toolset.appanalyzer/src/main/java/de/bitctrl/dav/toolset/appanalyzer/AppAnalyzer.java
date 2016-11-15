@@ -38,17 +38,18 @@ import de.bsvrz.sys.funclib.commandLineArgs.ArgumentList;
  */
 public class AppAnalyzer extends AbstractGUIApplication {
 
+	private boolean onlySummary;
+
 	@Override
 	public void parseArguments(final ArgumentList argumentList)
 			throws Exception {
-		// TODO Auto-generated method stub
-
+		onlySummary = argumentList.fetchArgument("-onlySummary=true").booleanValue();
 	}
 
 	@Override
 	public void initialize(final ClientDavInterface connection)
 			throws Exception {
-		final MainView mainView = new MainView(connection);
+		final MainView mainView = new MainView(connection, onlySummary);
 		mainView.pack();
 		mainView.setVisible(true);
 		System.err.println("Fertig");

@@ -85,7 +85,7 @@ public class MainView extends JFrame {
 
 	}
 
-	MainView(final ClientDavInterface dav) {
+	MainView(final ClientDavInterface dav, final boolean onlySummary) {
 
 		setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 		setPreferredSize(new Dimension(800, 600));
@@ -103,7 +103,7 @@ public class MainView extends JFrame {
 				final JFileChooser fileChooser = new JFileChooser();
 				if (fileChooser.showOpenDialog(MainView.this) == JFileChooser.APPROVE_OPTION) {
 					final Exporter exporter = new Exporter(dav,
-							applicationList, fileChooser.getSelectedFile());
+							applicationList, fileChooser.getSelectedFile(), onlySummary);
 					exporter.start();
 				}
 			}
