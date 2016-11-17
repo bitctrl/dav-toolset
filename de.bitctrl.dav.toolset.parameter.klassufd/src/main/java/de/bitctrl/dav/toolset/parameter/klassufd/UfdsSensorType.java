@@ -18,7 +18,7 @@
  *
  * Contact Information:
  * BitCtrl Systems GmbH
- * Weißenfelser Straße 67
+ * WeiÃŸenfelser StraÃŸe 67
  * 04229 Leipzig
  * Phone: +49 341-490670
  * mailto: info@bitctrl.de
@@ -27,25 +27,25 @@
 package de.bitctrl.dav.toolset.parameter.klassufd;
 
 /**
- * Definition der unterstützten Umfelddaten-Sensortypen, für die Parameter zur
- * Verfügung stehen.
+ * Definition der unterstÃ¼tzten Umfelddaten-Sensortypen, fÃ¼r die Parameter zur
+ * VerfÃ¼gung stehen.
  *
  * Momentan werden nur die Typen:
  * <ul>
- * <li>Niederschlagsintensität</li>
+ * <li>NiederschlagsintensitÃ¤t</li>
  * <li>Wasserfilmdicke und</li>
  * <li>Sichtweite</li>
  * </ul>
  *
- * unterstützt, da für diese Stufen für die Klassifizierung in den allgemeinen
+ * unterstÃ¼tzt, da fÃ¼r diese Stufen fÃ¼r die Klassifizierung in den allgemeinen
  * Anforderungen definiert sind.
  *
  * @author BitCtrl Systems GmbH, Uwe Peuker
  */
 public enum UfdsSensorType {
 
-	/** Sensortyp "Niederschlagsintensität". */
-	NI("NiederschlagsIntensität"),
+	/** Sensortyp "NiederschlagsintensitÃ¤t". */
+	NI("NiederschlagsIntensitÃ¤t"),
 
 	/** Sensortyp "Wasserfilmdicke". */
 	WFD("WasserFilmDicke"),
@@ -70,8 +70,8 @@ public enum UfdsSensorType {
 	}
 
 	/**
-	 * liefert den Name des Attributs für den Sensortyp. Der Name wird per
-	 * Konvention verwendet, um die PID für Attributgruppen zu bilden.
+	 * liefert den Name des Attributs fÃ¼r den Sensortyp. Der Name wird per
+	 * Konvention verwendet, um die PID fÃ¼r Attributgruppen zu bilden.
 	 *
 	 * @return der Name
 	 */
@@ -80,8 +80,8 @@ public enum UfdsSensorType {
 	}
 
 	/**
-	 * liefert ein Array von Paaren von Gernzwerten (von,bis) für die
-	 * Standardstufen für die Klassifizierung der Daten eines
+	 * liefert ein Array von Paaren von Gernzwerten (von,bis) fÃ¼r die
+	 * Standardstufen fÃ¼r die Klassifizierung der Daten eines
 	 * Umfelddatensensors.
 	 *
 	 * @return das Array

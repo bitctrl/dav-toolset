@@ -18,7 +18,7 @@
  *
  * Contact Information:
  * BitCtrl Systems GmbH
- * Weiﬂenfelser Straﬂe 67
+ * Wei√üenfelser Stra√üe 67
  * 04229 Leipzig
  * Phone: +49 341-490670
  * mailto: info@bitctrl.de
@@ -46,9 +46,9 @@ import de.bsvrz.dav.daf.main.config.SystemObject;
 import de.bsvrz.dav.daf.main.config.SystemObjectType;
 
 /**
- * Setter f¸r einen Typ von Umfelddatensensoren.
+ * Setter f√ºr einen Typ von Umfelddatensensoren.
  *
- * Gesetzt werden die Stufen f¸r die Klassifizierung in der
+ * Gesetzt werden die Stufen f√ºr die Klassifizierung in der
  * Parameter-Attributgruppe "atg.ufdsKlassifizierung{Typname}", wenn noch keine
  * Stufen festgelegt wurden.
  *
@@ -93,7 +93,7 @@ public class UfdsSensorenSetter {
 				}
 			}
 
-			System.err.println("Setze Klassifizierungsparameter f¸r " + sensor);
+			System.err.println("Setze Klassifizierungsparameter f√ºr " + sensor);
 
 			final Data newParameter = connection.createData(atg);
 			final Array stufen = newParameter.getArray("Klassifizierung" + sensorType.getAttName());
@@ -113,8 +113,8 @@ public class UfdsSensorenSetter {
 		}
 	}
 
-	UfdsSensorenSetter(final ClientDavInterface connection, final UfdsSensorType sensorType, Set<String> kbPids,
-			boolean force) {
+	UfdsSensorenSetter(final ClientDavInterface connection, final UfdsSensorType sensorType, final Set<String> kbPids,
+			final boolean force) {
 		this.connection = connection;
 		this.sensorType = sensorType;
 		this.kbPids.addAll(kbPids);

@@ -18,7 +18,7 @@
  *
  * Contact Information:
  * BitCtrl Systems GmbH
- * Weiﬂenfelser Straﬂe 67
+ * Wei√üenfelser Stra√üe 67
  * 04229 Leipzig
  * Phone: +49 341-490670
  * mailto: info@bitctrl.de
@@ -46,24 +46,24 @@ public class ParameterSetter implements StandardApplication {
 
 	private final Set<String> kbPids = new LinkedHashSet<>();
 	private boolean force;
-	
+
 	@Override
 	public void parseArguments(final ArgumentList argumentList) throws Exception {
-		Argument pids = argumentList.fetchArgument("-kbPids");
-		if( pids != null) {
-			String[] parts = pids.asString().split(",");
-			for( String part : parts ) {
-				String trimmedPart = part.trim();
-				if( !trimmedPart.isEmpty()) {
+		final Argument pids = argumentList.fetchArgument("-kbPids");
+		if (pids != null) {
+			final String[] parts = pids.asString().split(",");
+			for (String part : parts) {
+				final String trimmedPart = part.trim();
+				if (!trimmedPart.isEmpty()) {
 					kbPids.add(trimmedPart);
 				}
 			}
 		}
-		
+
 		force = Boolean.parseBoolean(argumentList.fetchArgument("-force=false").asString());
-		
-		Argument[] unusedArguments = argumentList.fetchUnusedArguments();
-		if( unusedArguments != null ) {
+
+		final Argument[] unusedArguments = argumentList.fetchUnusedArguments();
+		if (unusedArguments != null) {
 			Debug.getLogger().info("Unbenutzte Argumente", unusedArguments);
 		}
 	}
@@ -72,7 +72,8 @@ public class ParameterSetter implements StandardApplication {
 	public void initialize(final ClientDavInterface connection) throws Exception {
 
 		for (final UfdsSensorType sensorType : UfdsSensorType.values()) {
-			final UfdsSensorenSetter umfeldDatenSensorenSetter = new UfdsSensorenSetter(connection, sensorType, kbPids, force);
+			final UfdsSensorenSetter umfeldDatenSensorenSetter = new UfdsSensorenSetter(connection, sensorType, kbPids,
+					force);
 			umfeldDatenSensorenSetter.run();
 		}
 
@@ -83,7 +84,7 @@ public class ParameterSetter implements StandardApplication {
 	 * Startpunkt der Applikation.
 	 *
 	 * Neden den Standard-Datenverteiler-Argumenten zum Herstellen der
-	 * Verbindung werden keine zus‰tzlichen Argumente erwartet.
+	 * Verbindung werden keine zus√§tzlichen Argumente erwartet.
 	 *
 	 * @param args
 	 *            die Kommandozeilenargumente

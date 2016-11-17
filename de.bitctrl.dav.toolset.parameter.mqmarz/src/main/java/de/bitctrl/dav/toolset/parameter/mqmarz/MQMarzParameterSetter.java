@@ -1,24 +1,24 @@
 /*
- * SWE Parametrierungs-Hilfs-Tool für MQ und das Verfahren MARZ
- * Copyright (C) 2014 BitCtrl Systems GmbH
+ * Allgemeine Datenverteiler-Tools
+ * Copyright (C) 2007-2015 BitCtrl Systems GmbH
  *
- * This program is free software; you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation; either version 2 of the License, or (at your option) any later
- * version.
+ * This project is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free
+ * Software Foundation; either version 2 of the License, or (at your option)
+ * any later version.
  *
- * This program is distributed in the hope that it will be useful, but WITHOUT
+ * This project is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+ * FOR A PARTICULAR PURPOSE.  See the GNU Lesser General Public License for more
  * details.
  *
- * You should have received a copy of the GNU General Public License along with
- * this program; if not, write to the Free Software Foundation, Inc., 51
- * Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+ * You should have received a copy of the GNU General Public License
+ * along with this project; if not, write to the Free Software Foundation, Inc.,
+ * 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA.
  *
  * Contact Information:
  * BitCtrl Systems GmbH
- * Weissenfelser Strasse 67
+ * WeiÃŸenfelser StraÃŸe 67
  * 04229 Leipzig
  * Phone: +49 341-490670
  * mailto: info@bitctrl.de
@@ -41,9 +41,9 @@ import de.bsvrz.dav.daf.main.config.DataModel;
 import de.bsvrz.dav.daf.main.config.SystemObject;
 
 /**
- * Setter für einen Typ von Umfelddatensensoren.
+ * Setter fÃ¼r einen Typ von Umfelddatensensoren.
  *
- * Gesetzt werden die Stufen für die Klassifizierung in der
+ * Gesetzt werden die Stufen fÃ¼r die Klassifizierung in der
  * Parameter-Attributgruppe "atg.ufdsKlassifizierung{Typname}", wenn noch keine
  * Stufen festgelegt wurden.
  *
@@ -139,6 +139,6 @@ public class MQMarzParameterSetter {
 		
 		System.err.println("MQ-Parameter (" + atg.getNameOrPidOrId() + ") aktualisiert.");
 		System.err.println("\tKorrigiert : " + setCounter + " MQ");
-		System.err.println("\tUnverändert: " + okCounter + " MQ");
+		System.err.println("\tUnverÃ¤ndert: " + okCounter + " MQ");
 	}
 }

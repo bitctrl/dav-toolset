@@ -18,7 +18,7 @@
  *
  * Contact Information:
  * BitCtrl Systems GmbH
- * Weißenfelser Straße 67
+ * WeiÃŸenfelser StraÃŸe 67
  * 04229 Leipzig
  * Phone: +49 341-490670
  * mailto: info@bitctrl.de
@@ -31,10 +31,10 @@ import de.bsvrz.dav.daf.main.DataDescription;
 import de.bsvrz.dav.daf.main.config.SystemObject;
 
 /**
- * Standardimplementierung für ein ClientSenderInterface, das zum Setzen von
+ * Standardimplementierung fÃ¼r ein ClientSenderInterface, das zum Setzen von
  * Parametern verwendet wird.
  *
- * Es wird davon ausgegangen, dass die Parametrierung für die Versorgung der
+ * Es wird davon ausgegangen, dass die Parametrierung fÃ¼r die Versorgung der
  * versendeten Parameter angemeldet ist. Auf eine Auswertung der Sendesteuerung
  * wurde daher hier verzichtet.
  *
@@ -44,7 +44,7 @@ public class SimpleParameterSender implements ClientSenderInterface {
 
 	@Override
 	public void dataRequest(final SystemObject object, final DataDescription dataDescription, final byte state) {
-		// Rückmeldungen werden nicht erwartet und ausgewertet
+		// RÃ¼ckmeldungen werden nicht erwartet und ausgewertet
 	}
 
 	@Override

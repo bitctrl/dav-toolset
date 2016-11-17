@@ -1,3 +1,28 @@
+/*
+ * Allgemeine Datenverteiler-Tools
+ * Copyright (C) 2007-2015 BitCtrl Systems GmbH
+ *
+ * This project is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free
+ * Software Foundation; either version 2 of the License, or (at your option)
+ * any later version.
+ *
+ * This project is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE.  See the GNU Lesser General Public License for more
+ * details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this project; if not, write to the Free Software Foundation, Inc.,
+ * 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA.
+ *
+ * Contact Information:
+ * BitCtrl Systems GmbH
+ * WeiÃŸenfelser StraÃŸe 67
+ * 04229 Leipzig
+ * Phone: +49 341-490670
+ * mailto: info@bitctrl.de
+ */
 package de.bitctrl.dav.toolset.swelister;
 
 import java.io.BufferedReader;
@@ -17,79 +42,94 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
+/**
+ * Applikation zum Auflisten der Versionen der Komponenten eines
+ * Datenverteilersystems.
+ * 
+ * @author BitCtrl Systems GmbH, Uwe Peuker
+ */
 public class SweLister {
 
 	private String baseDir;
 
-	public SweLister(final String[] args) {
+	SweLister(final String[] args) {
 		for (String arg : args) {
-			String[] split = arg.split("=");
+			final String[] split = arg.split("=");
 			if ("-baseDir".equals(split[0]) && split.length > 1) {
 				baseDir = split[1].trim();
 			}
 		}
 	}
 
-	public static void main(String[] args) {
-		SweLister app = new SweLister(args);
+	/**
+	 * Startpunkt der Applikation.
+	 * 
+	 * @param args
+	 *            die Kommandozeilenargumente
+	 */
+	public static void main(final String[] args) {
+		final SweLister app = new SweLister(args);
 		app.run();
 	}
 
 	private void run() {
-		System.out.println("Prüfe SWE-Versionen");
+		System.out.println("PrÃ¼fe SWE-Versionen");
 		System.out.println("===========================================\n");
 
 		if (baseDir == null) {
 			System.err.println(
-					"Kein Basis-Verzeichnis für die Datenverteiler SWE angegeben (Parameter baseDir=<verzeichnis>!");
+					"Kein Basis-Verzeichnis fÃ¼r die Datenverteiler SWE angegeben (Parameter baseDir=<verzeichnis>!");
 			return;
 		}
 
 		final File root = new File(baseDir);
 		listJars(root, true);
 
-		System.out.println("\nPrüfung abgeschlossen\n");
+		System.out.println("\nPrÃ¼fung abgeschlossen\n");
 
 	}
 
 	private void listJars(final File root, final boolean rekursive) {
 		if (root.isDirectory()) {
-			for (final File file : root.listFiles()) {
-				if (file.isDirectory() && rekursive) {
-					listJars(file, !file.getName().startsWith("de."));
-				} else {
-					if (file.getName().endsWith(".jar")) {
-						if (file.getName().startsWith("de.")) {
+			final File[] listFiles = root.listFiles();
+			if (listFiles != null) {
+				for (final File file : listFiles) {
+					if (file.isDirectory() && rekursive) {
+						listJars(file, !file.getName().startsWith("de."));
+					} else {
+						if (file.getName().endsWith(".jar")) {
+							if (file.getName().startsWith("de.")) {
 
-							if (file.getName().endsWith("-runtime.jar")) {
-								continue;
-							}
-
-							if (file.getName().endsWith("-test.jar")) {
-								continue;
-							}
-
-							System.out.print(file.getName());
-							try (JarFile jar = new JarFile(file)) {
-								final Manifest manifest = jar.getManifest();
-								final Attributes attributes = manifest.getMainAttributes();
-								final String value = attributes.getValue("Implementation-Title");
-								if (value == null) {
-									listVersionFile(file);
-								} else {
-									System.out.print("\t" + value);
-									System.out.print("\t\"" + attributes.getValue("Implementation-Version") + "\"");
-									System.out.println("\tMANIFEST");
+								if (file.getName().endsWith("-runtime.jar")) {
+									continue;
 								}
-							} catch (final IOException e) {
-								// TODO Auto-generated catch block
-								e.printStackTrace();
-							} catch (final SAXException e) {
-								// TODO Auto-generated catch block
-								e.printStackTrace();
-							} catch (final ParserConfigurationException e) {
-								// TODO Auto-generated catch block
-								e.printStackTrace();
+
+								if (file.getName().endsWith("-test.jar")) {
+									continue;
+								}
+
+								System.out.print(file.getName());
+								try (JarFile jar = new JarFile(file)) {
+									final Manifest manifest = jar.getManifest();
+									final Attributes attributes = manifest.getMainAttributes();
+									final String value = attributes.getValue("Implementation-Title");
+									if (value == null) {
+										listVersionFile(file);
+									} else {
+										System.out.print("\t" + value);
+										System.out.print("\t\"" + attributes.getValue("Implementation-Version") + "\"");
+										System.out.println("\tMANIFEST");
+									}
+								} catch (final IOException e) {
+									// TODO Auto-generated catch block
+									e.printStackTrace();
+								} catch (final SAXException e) {
+									// TODO Auto-generated catch block
+									e.printStackTrace();
+								} catch (final ParserConfigurationException e) {
+									// TODO Auto-generated catch block
+									e.printStackTrace();
+								}
 							}
 						}
 					}
@@ -124,11 +164,13 @@ public class SweLister {
 			System.out.print("\t" + sweName);
 
 			String version = "";
-			final NodeList versionElements = packageItem.getElementsByTagName("version");
-			if (versionElements.getLength() > 0) {
-				final Element versionElement = (Element) versionElements.item(0);
-				if (versionElement != null) {
-					version = versionElement.getAttribute("number");
+			if (packageItem != null) {
+				final NodeList versionElements = packageItem.getElementsByTagName("version");
+				if (versionElements.getLength() > 0) {
+					final Element versionElement = (Element) versionElements.item(0);
+					if (versionElement != null) {
+						version = versionElement.getAttribute("number");
+					}
 				}
 			}
 			System.out.println("\t\"" + version + "\"\t" + infoFile.getName());

@@ -23,19 +23,9 @@
  * Phone: +49 341-490670
  * mailto: info@bitctrl.de
  */
-package de.bitctrl.dav.toolset.system;
 
 /**
- * Allgemeine Definitionen für alle eingebundenen Tools der SWE.
- *
- * @author BitCtrl Systems GmbH, Uwe Peuker
+ * Klassen der Applikation zur Parametrierung von Archiv und Parametrierung aus
+ * einer CSV-Datei.
  */
-public final class CommonDefs {
-
-	private CommonDefs() {
-		// es gibt keine Instanzen der Klasse.
-	}
-
-	/** das Datumsformat für Logmeldungen. */
-	public static final String LOGFILE_DATE_FORMAT = "dd.MM.yyyy HH:mm:ss.SSS";
-}
+package de.bitctrl.dav.toolset.system;

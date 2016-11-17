@@ -1,14 +1,14 @@
-# Tool zur Parametrierung der Klassifizierung für Umfelddatensensoren
+# Tool zur Parametrierung der Klassifizierung fÃ¼r Umfelddatensensoren
 
-Gesetzt werden die in den Anforderungen des Segment DuA vorgebenenen Grenzwerte für Sensoren der Typen:
+Gesetzt werden die in den Anforderungen des Segment DuA vorgebenenen Grenzwerte fÃ¼r Sensoren der Typen:
 
-- Niederschlagsintensität
+- NiederschlagsintensitÃ¤t
 - Wasserfilmdicke und
 - Sichtweite
 
 Version: 1.0.0
 
-## Übersicht
+## Ãœbersicht
 
   
 ## Versionsgeschichte
@@ -20,7 +20,7 @@ Version: 1.0.0
 ## Kontakt
 
 BitCtrl Systems GmbH  
-Weißenfelser Straße 67  
+WeiÃŸenfelser StraÃŸe 67  
 04229 Leipzig  
 Phone: +49 341-490670  
 mailto: info@bitctrl.de  

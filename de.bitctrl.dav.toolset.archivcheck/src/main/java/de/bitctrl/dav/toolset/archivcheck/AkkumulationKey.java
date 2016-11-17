@@ -1,38 +1,55 @@
+/*
+ * Allgemeine Datenverteiler-Tools
+ * Copyright (C) 2007-2015 BitCtrl Systems GmbH
+ *
+ * This project is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free
+ * Software Foundation; either version 2 of the License, or (at your option)
+ * any later version.
+ *
+ * This project is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE.  See the GNU Lesser General Public License for more
+ * details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this project; if not, write to the Free Software Foundation, Inc.,
+ * 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA.
+ *
+ * Contact Information:
+ * BitCtrl Systems GmbH
+ * Weißenfelser Straße 67
+ * 04229 Leipzig
+ * Phone: +49 341-490670
+ * mailto: info@bitctrl.de
+ */
+
 package de.bitctrl.dav.toolset.archivcheck;
 
-import de.bsvrz.dav.daf.main.config.Aspect;
-import de.bsvrz.dav.daf.main.config.AttributeGroup;
+import java.util.Objects;
 
 class AkkumulationKey {
 
 	private Object atg;
 	private Object asp;
 
-	public AkkumulationKey(Object atg, Object aspect) {
+	AkkumulationKey(final Object atg, final Object aspect) {
 		this.atg = atg;
 		this.asp = aspect;
 	}
 
 	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
+	public boolean equals(final Object obj) {
+
+		if (this == obj) {
 			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		AkkumulationKey other = (AkkumulationKey) obj;
-		if (asp == null) {
-			if (other.asp != null)
-				return false;
-		} else if (!asp.equals(other.asp))
-			return false;
-		if (atg == null) {
-			if (other.atg != null)
-				return false;
-		} else if (!atg.equals(other.atg))
-			return false;
-		return true;
+		}
+		if (obj instanceof AkkumulationKey) {
+			final AkkumulationKey akkKey = (AkkumulationKey) obj;
+			return Objects.equals(asp, akkKey.asp) && Objects.equals(atg, akkKey.atg);
+		}
+
+		return false;
 	}
 
 	public Object getAsp() {
@@ -45,11 +62,7 @@ class AkkumulationKey {
 
 	@Override
 	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((asp == null) ? 0 : asp.hashCode());
-		result = prime * result + ((atg == null) ? 0 : atg.hashCode());
-		return result;
+		return Objects.hash(asp, atg);
 	}
 
 	@Override

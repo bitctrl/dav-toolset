@@ -18,7 +18,7 @@
  *
  * Contact Information:
  * BitCtrl Systems GmbH
- * Weiﬂenfelser Straﬂe 67
+ * Wei√üenfelser Stra√üe 67
  * 04229 Leipzig
  * Phone: +49 341-490670
  * mailto: info@bitctrl.de
@@ -47,7 +47,7 @@ import de.bsvrz.dav.daf.main.config.SystemObject;
  * Hauptfenster der SWE.
  *
  * Es wird eine Liste der aktiven Applikationen angezeigt, deren Anmeldungen als
- * Datei exportiert werden kˆnnen.
+ * Datei exportiert werden k√∂nnen.
  *
  * @author BitCtrl Systems GmbH, Uwe Peuker
  */
@@ -57,9 +57,8 @@ public class MainView extends JFrame {
 
 		private final SystemObject[] applications;
 
-		public ApplicationListModel(final DataModel dataModel) {
-			final List<SystemObject> elements = dataModel.getType(
-					"typ.applikation").getElements();
+		ApplicationListModel(final DataModel dataModel) {
+			final List<SystemObject> elements = dataModel.getType("typ.applikation").getElements();
 			applications = elements.toArray(new SystemObject[elements.size()]);
 		}
 
@@ -90,8 +89,7 @@ public class MainView extends JFrame {
 		setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 		setPreferredSize(new Dimension(800, 600));
 
-		final JList<SystemObject> applicationList = new JList<>(
-				new ApplicationListModel(dav.getDataModel()));
+		final JList<SystemObject> applicationList = new JList<>(new ApplicationListModel(dav.getDataModel()));
 		getContentPane().add(applicationList, BorderLayout.CENTER);
 
 		final JButton exportButton = new JButton("Exportiere Anmeldungen");
@@ -102,8 +100,8 @@ public class MainView extends JFrame {
 			public void actionPerformed(final ActionEvent e) {
 				final JFileChooser fileChooser = new JFileChooser();
 				if (fileChooser.showOpenDialog(MainView.this) == JFileChooser.APPROVE_OPTION) {
-					final Exporter exporter = new Exporter(dav,
-							applicationList, fileChooser.getSelectedFile(), onlySummary);
+					final Exporter exporter = new Exporter(dav, applicationList, fileChooser.getSelectedFile(),
+							onlySummary);
 					exporter.start();
 				}
 			}

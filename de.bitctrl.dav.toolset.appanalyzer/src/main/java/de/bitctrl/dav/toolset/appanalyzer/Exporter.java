@@ -18,7 +18,7 @@
  *
  * Contact Information:
  * BitCtrl Systems GmbH
- * Weiﬂenfelser Straﬂe 67
+ * Wei√üenfelser Stra√üe 67
  * 04229 Leipzig
  * Phone: +49 341-490670
  * mailto: info@bitctrl.de
@@ -65,7 +65,7 @@ public class Exporter extends Thread {
 		private final AttributeGroup atg;
 		private final Aspect asp;
 
-		public SummaryKey(final String rolle, final SystemObjectType type, final AttributeGroup atg, final Aspect asp) {
+		SummaryKey(final String rolle, final SystemObjectType type, final AttributeGroup atg, final Aspect asp) {
 			this.rolle = rolle;
 			this.type = type;
 			this.atg = atg;
@@ -155,7 +155,7 @@ public class Exporter extends Thread {
 			for (final SystemObject exportApp : exportApplications) {
 
 				final String appName = exportApp.toString();
-				System.err.println("Exportiere Anmeldungen f¸r: " + appName);
+				System.err.println("Exportiere Anmeldungen f√ºr: " + appName);
 
 				writer.println(appName);
 				for (int idx = 0; idx < appName.length(); idx++) {
@@ -222,7 +222,7 @@ public class Exporter extends Thread {
 		final Map<SummaryKey, Long> summary = new HashMap<>();
 
 		final Array feld = data.getArray("angemeldeteDatenidentifikation");
-		System.err.println("\tPr¸fe: " + feld.getLength() + " Spezifikationen");
+		System.err.println("\tPr√ºfe: " + feld.getLength() + " Spezifikationen");
 		for (int idx = 0; idx < feld.getLength(); idx++) {
 			final Data item = feld.getItem(idx);
 
@@ -246,7 +246,7 @@ public class Exporter extends Thread {
 				writer.println(rolle + ";" + objekt + ";" + atg + ";" + asp);
 			} else {
 				if (idx % 100 == 1) {
-					System.err.println("\tGepr¸ft: " + idx);
+					System.err.println("\tGepr√ºft: " + idx);
 				}
 			}
 		}
