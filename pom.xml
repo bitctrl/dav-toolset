@@ -32,8 +32,9 @@
 
 	<repositories>
 		<repository>
-			<id>bintray-bitctrl</id>
-			<url>https://bintray.com/bitctrl/maven</url>
+			<id>bintray-bitctrl-maven</id>
+			<name>bintray</name>
+			<url>http://dl.bintray.com/bitctrl/maven</url>
 		</repository>
 	</repositories>
 
