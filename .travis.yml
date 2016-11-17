@@ -3,4 +3,4 @@ jdk:
   - oraclejdk8
 
 script: 
-  mvn -DskipTests -P!assembly verify
+  mvn -DskipTests -Dassembly.skipAssembly=true install
