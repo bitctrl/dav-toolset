@@ -2,5 +2,4 @@ language: java
 jdk:
   - oraclejdk8
 
-script: 
-  mvn -DskipTests -Dassembly.skipAssembly=true install
+script: mvn -DskipTests -Dassembly.skipAssembly=true install -B -V
