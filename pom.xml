@@ -27,17 +27,13 @@
 		<project.build.sourceEncoding>ISO-8859-1</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>ISO-8859-1</project.reporting.outputEncoding>
 		<java.version>8</java.version>
-		<project.status>BETA</project.status>
-		<project.standDatum>2015-04-24</project.standDatum>
+		<maven.build.timestamp.format>yyyy-MM-dd</maven.build.timestamp.format>
 	</properties>
 
 	<repositories>
-		<!-- <repository> <id>bitctrl.nexus</id> <name>Lokales BitCtrl Maven Repository</name> 
-			<url>http://bitctrlbuildserver:8081/nexus/content/repositories/releases/</url> 
-			</repository> -->
 		<repository>
-			<id>github-falkoschumann</id>
-			<url>http://falkoschumann.github.io/maven-repository/releases/</url>
+			<id>bintray-bitctrl</id>
+			<url>https://bintray.com/bitctrl/maven</url>
 		</repository>
 	</repositories>
 
@@ -56,12 +52,12 @@
 			<dependency>
 				<groupId>de.bsvrz.dav</groupId>
 				<artifactId>de.bsvrz.dav.daf</artifactId>
-				<version>3.6.2</version>
+				<version>3.8.0</version>
 			</dependency>
 			<dependency>
 				<groupId>de.bsvrz.sys</groupId>
 				<artifactId>de.bsvrz.sys.funclib.application</artifactId>
-				<version>3.6.2</version>
+				<version>3.8.0</version>
 			</dependency>
 			<dependency>
 				<groupId>junit</groupId>
@@ -227,7 +223,7 @@
 					<artifactId>maven-assembly-plugin</artifactId>
 					<version>2.4</version>
 					<configuration>
-						<finalName>SWE_${project.artifactId}_${project.status}_V${project.version}_D${project.standDatum}</finalName>
+						<finalName>SWE_${project.artifactId}_V${project.version}_D${maven.build.timestamp}</finalName>
 						<appendAssemblyId>false</appendAssemblyId>
 						<descriptors>
 							<descriptor>src/main/assembly/swe.xml</descriptor>
