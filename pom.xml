@@ -48,6 +48,7 @@
 		<module>de.bitctrl.dav.toolset.kblister</module>
 		<module>de.bitctrl.dav.toolset.swelister</module>
 		<module>de.bitctrl.dav.toolset.parameter.mqmarz</module>
+		<module>de.bitctrl.dav.toolset.parameter.klassufd</module>
 	</modules>
 
 	<dependencyManagement>
