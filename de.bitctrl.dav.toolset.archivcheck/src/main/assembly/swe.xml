@@ -22,11 +22,11 @@
 			<includes>
 				<include>*</include>
 			</includes>
-			<!--<excludes>
+			<excludes>
 				<exclude>de.bsvrz.*</exclude>
 				<exclude>com.bitctrl*</exclude>
 			</excludes>
-			-->
+			
 		</fileSet>
 	</fileSets>
 
