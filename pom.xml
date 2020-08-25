@@ -198,10 +198,11 @@
 								<archive>
 									<manifest>
 										<addClasspath>true</addClasspath>
-										<classpathLayoutType>custom</classpathLayoutType>
+									    <classpathPrefix>lib/</classpathPrefix>
+										<!-- <classpathLayoutType>custom</classpathLayoutType>
 										<customClasspathLayout>
 											../${artifact.artifactId}/${artifact.artifactId}-runtime.${artifact.extension}
-										</customClasspathLayout>
+										</customClasspathLayout> -->
 										<mainClass>de.bitctrl.dav.toolset.appanalyzer.AppAnalyzer</mainClass>
 									</manifest>
 									<manifestEntries>
