@@ -1,8 +1,8 @@
-# Tool zur Ermittlung der Konfigurationsbereiche f¸r Instanzen von Objekten
+# Tool zur Ermittlung der Konfigurationsbereiche f√ºr Instanzen von Objekten
 
 Version: 1.0.0
 
-## ‹bersicht
+## √úbersicht
 
   
 ## Versionsgeschichte
@@ -14,7 +14,7 @@ Version: 1.0.0
 ## Kontakt
 
 BitCtrl Systems GmbH  
-Weiﬂenfelser Straﬂe 67  
+Wei√üenfelser Stra√üe 67  
 04229 Leipzig  
 Phone: +49 341-490670  
 mailto: info@bitctrl.de  

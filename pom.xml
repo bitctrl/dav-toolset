@@ -24,20 +24,17 @@
 	</licenses>
 
 	<properties>
-		<project.build.sourceEncoding>ISO-8859-1</project.build.sourceEncoding>
-		<project.reporting.outputEncoding>ISO-8859-1</project.reporting.outputEncoding>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<java.version>8</java.version>
-		<project.status>BETA</project.status>
-		<project.standDatum>2015-04-24</project.standDatum>
+		<maven.build.timestamp.format>yyyy-MM-dd</maven.build.timestamp.format>
 	</properties>
 
 	<repositories>
-		<!-- <repository> <id>bitctrl.nexus</id> <name>Lokales BitCtrl Maven Repository</name> 
-			<url>http://bitctrlbuildserver:8081/nexus/content/repositories/releases/</url> 
-			</repository> -->
 		<repository>
-			<id>github-falkoschumann</id>
-			<url>http://falkoschumann.github.io/maven-repository/releases/</url>
+			<id>bintray-bitctrl-maven</id>
+			<name>bintray</name>
+			<url>http://dl.bintray.com/bitctrl/maven</url>
 		</repository>
 	</repositories>
 
@@ -47,6 +44,8 @@
 		<module>de.bitctrl.dav.toolset.system</module>
 		<module>de.bitctrl.dav.toolset.kblister</module>
 		<module>de.bitctrl.dav.toolset.swelister</module>
+		<module>de.bitctrl.dav.toolset.parameter.mqmarz</module>
+		<module>de.bitctrl.dav.toolset.parameter.klassufd</module>
 	</modules>
 
 	<dependencyManagement>
@@ -54,12 +53,12 @@
 			<dependency>
 				<groupId>de.bsvrz.dav</groupId>
 				<artifactId>de.bsvrz.dav.daf</artifactId>
-				<version>3.6.2</version>
+				<version>3.8.0</version>
 			</dependency>
 			<dependency>
 				<groupId>de.bsvrz.sys</groupId>
 				<artifactId>de.bsvrz.sys.funclib.application</artifactId>
-				<version>3.6.2</version>
+				<version>3.8.0</version>
 			</dependency>
 			<dependency>
 				<groupId>junit</groupId>
@@ -153,7 +152,7 @@
 				<plugin>
 					<groupId>org.codehaus.mojo</groupId>
 					<artifactId>findbugs-maven-plugin</artifactId>
-					<version>3.0.1</version>
+					<version>3.0.5</version>
 					<executions>
 						<execution>
 							<phase>verify</phase>
@@ -225,7 +224,7 @@
 					<artifactId>maven-assembly-plugin</artifactId>
 					<version>2.4</version>
 					<configuration>
-						<finalName>SWE_${project.artifactId}_${project.status}_V${project.version}_D${project.standDatum}</finalName>
+						<finalName>SWE_${project.artifactId}_V${project.version}_D${maven.build.timestamp}</finalName>
 						<appendAssemblyId>false</appendAssemblyId>
 						<descriptors>
 							<descriptor>src/main/assembly/swe.xml</descriptor>
@@ -237,16 +236,6 @@
 		</pluginManagement>
 
 	</build>
-
-	<reporting>
-		<plugins>
-			<plugin>
-				<groupId>org.codehaus.mojo</groupId>
-				<artifactId>cobertura-maven-plugin</artifactId>
-				<version>2.7</version>
-			</plugin>
-		</plugins>
-	</reporting>
 
 	<distributionManagement>
 		<repository>

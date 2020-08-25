@@ -18,7 +18,7 @@
  *
  * Contact Information:
  * BitCtrl Systems GmbH
- * Weißenfelser Straße 67
+ * WeiÃŸenfelser StraÃŸe 67
  * 04229 Leipzig
  * Phone: +49 341-490670
  * mailto: info@bitctrl.de
@@ -34,7 +34,6 @@ import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Locale;
-import java.util.logging.Logger;
 
 import de.bsvrz.dav.daf.main.ClientDavInterface;
 import de.bsvrz.dav.daf.main.ClientReceiverInterface;
@@ -57,17 +56,17 @@ import de.bsvrz.dav.daf.main.config.SystemObjectType;
 import de.bsvrz.sys.funclib.application.StandardApplication;
 import de.bsvrz.sys.funclib.application.StandardApplicationRunner;
 import de.bsvrz.sys.funclib.commandLineArgs.ArgumentList;
+import de.bsvrz.sys.funclib.debug.Debug;
 
 /**
  * Applikation, um die Archivapplikation automatisiert zu parametrieren.
  * CSV-Datei mit 1.Spalte Typ-PID, 2.Spalte ATG-PID und 3. Spalte ASP-PID.
  *
  * @author BitCtrl Systems GmbH, Albrecht Uhlmann, Thomas Thierfelder
- * @version $Id: ParametrierungParametrieren.java 43952 2013-05-15 15:26:53Z
- *          uhlmann $
  */
-public class ArchivParametrieren implements StandardApplication,
-ClientSenderInterface, ClientReceiverInterface {
+public class ArchivParametrieren implements StandardApplication, ClientSenderInterface, ClientReceiverInterface {
+
+	private static final Debug LOGGER = Debug.getLogger();
 
 	private static final String ITEM_PARAMETER_SATZ = "ParameterSatz";
 
@@ -96,7 +95,7 @@ ClientSenderInterface, ClientReceiverInterface {
 	 */
 	private static final String ATG_ARCHIV = "atg.archiv";
 
-	private static String pidArchiv = "";
+	private String pidArchiv = "";
 
 	private ResultData parametersatz;
 
@@ -110,17 +109,15 @@ ClientSenderInterface, ClientReceiverInterface {
 
 	private void readCsv() {
 		String content;
-		Logger.getLogger(getClass().getName()).info(
-				"Beginne Einlesen von "
-						+ parametrierungsValidatorInputFile.getPath());
+		LOGGER.info("Beginne Einlesen von " + parametrierungsValidatorInputFile.getPath());
 
-		try (RandomAccessFile sourceFile = new RandomAccessFile(
-				parametrierungsValidatorInputFile.getAbsolutePath(), "r")) {
+		try (RandomAccessFile sourceFile = new RandomAccessFile(parametrierungsValidatorInputFile.getAbsolutePath(),
+				"r")) {
 			while ((content = sourceFile.readLine()) != null) {
 				if (content.startsWith("#")) {
 					continue;
 				}
-				Logger.getLogger(getClass().getName()).finer(content);
+				LOGGER.finer(content);
 				final String[] values = content.split(";");
 				String typPid = null;
 				String atgPid = null;
@@ -128,35 +125,27 @@ ClientSenderInterface, ClientReceiverInterface {
 				String kbPid = null;
 				try {
 					typPid = values[ArchivParametrieren.OBJ_TYP_SPALTE];
-					if (values[ArchivParametrieren.ATG_SPALTE]
-							.startsWith("atg")) {
+					if (values[ArchivParametrieren.ATG_SPALTE].startsWith("atg")) {
 						atgPid = values[ArchivParametrieren.ATG_SPALTE];
 					}
-					if (values[ArchivParametrieren.ASP_SPALTE]
-							.startsWith("asp")) {
+					if (values[ArchivParametrieren.ASP_SPALTE].startsWith("asp")) {
 						aspPid = values[ArchivParametrieren.ASP_SPALTE];
 					}
-					if ((values.length > 3)
-							&& values[ArchivParametrieren.KB_SPALTE]
-									.startsWith("kb")) {
+					if ((values.length > 3) && values[ArchivParametrieren.KB_SPALTE].startsWith("kb")) {
 						kbPid = values[ArchivParametrieren.KB_SPALTE];
 					}
-					if ((typPid != null) || (atgPid != null)
-							|| (aspPid != null) || (kbPid != null)) {
-						typAtgAspSet.add(new ObjTypAtgAspKB(typPid, atgPid,
-								aspPid, kbPid));
+					if ((typPid != null) || (atgPid != null) || (aspPid != null) || (kbPid != null)) {
+						typAtgAspSet.add(new ObjTypAtgAspKB(typPid, atgPid, aspPid, kbPid));
 					}
 				} catch (final ArrayIndexOutOfBoundsException e) {
-					//
+					LOGGER.error(e.getLocalizedMessage(), e);
 				}
 			}
 			sourceFile.close();
 		} catch (final IOException e) {
-			Logger.getLogger(getClass().getName()).warning(
-					e.getLocalizedMessage());
+			LOGGER.warning(e.getLocalizedMessage());
 		} catch (final ArrayIndexOutOfBoundsException e) {
-			Logger.getLogger(getClass().getName()).fine(
-					"Leerzeile(n) am Ende der CSV");
+			LOGGER.fine("Leerzeile(n) am Ende der CSV", e);
 		}
 	}
 
@@ -165,105 +154,80 @@ ClientSenderInterface, ClientReceiverInterface {
 		Locale.setDefault(Locale.GERMANY);
 		this.connection = dav;
 		final DataModel model = dav.getDataModel();
-		parametrierungsObject = model.getObject(ArchivParametrieren.pidArchiv);
+		parametrierungsObject = model.getObject(pidArchiv);
 		if (null == parametrierungsObject) {
-			Logger.getLogger(getClass().getName())
-			.info("Angegebenes Parametrierungsobjekt existiert nicht, nehme AOE...");
+			LOGGER.info("Angegebenes Parametrierungsobjekt existiert nicht, nehme AOE...");
 			parametrierungsObject = dav.getLocalConfigurationAuthority();
 		}
 		readCsv();
 		if (typAtgAspSet.isEmpty()) {
 			finish("Nichts zu parametrieren.", 1);
 		} else {
-			Logger.getLogger(getClass().getName())
-			.info(typAtgAspSet.size()
-					+ " (Typ, Atg, Asp)-Kombinationen werden behandelt.");
-			AttributeGroup atg;
-			Logger.getLogger(getClass().getName())
-			.info(typAtgAspSet.size()
-					+ " (Typ, Atg, Asp)-Kombinationen werden zur Archivierung freigegeben.");
-			atg = model.getAttributeGroup(ArchivParametrieren.ATG_ARCHIV);
+			LOGGER.info(typAtgAspSet.size() + " (Typ, Atg, Asp)-Kombinationen werden behandelt.");
+			LOGGER.info(typAtgAspSet.size() + " (Typ, Atg, Asp)-Kombinationen werden zur Archivierung freigegeben.");
+			final AttributeGroup atg = model.getAttributeGroup(ArchivParametrieren.ATG_ARCHIV);
 			Aspect asp = model.getAspect("asp.parameterVorgabe");
 			vorgabeDescription = new DataDescription(atg, asp);
-			dav.subscribeSender(this, parametrierungsObject,
-					vorgabeDescription, SenderRole.sender());
+			dav.subscribeSender(this, parametrierungsObject, vorgabeDescription, SenderRole.sender());
 
 			asp = model.getAspect("asp.parameterSoll");
 			receiveDescription = new DataDescription(atg, asp);
-			dav.subscribeReceiver(this, parametrierungsObject,
-					receiveDescription, ReceiveOptions.normal(),
+			dav.subscribeReceiver(this, parametrierungsObject, receiveDescription, ReceiveOptions.normal(),
 					ReceiverRole.receiver());
-			Logger.getLogger(getClass().getName()).fine(
-					"Initialisierung erfolgreich");
+			LOGGER.fine("Initialisierung erfolgreich");
 		}
 	}
 
 	/** Hier findet die eigentliche Arbeit statt. */
 	private void parametersatzErzeugen() {
-		final Data data = connection.createData(connection.getDataModel()
-				.getAttributeGroup(ArchivParametrieren.ATG_ARCHIV));
+		final Data data = connection
+				.createData(connection.getDataModel().getAttributeGroup(ArchivParametrieren.ATG_ARCHIV));
 		if (data != null) {
-			final Data urlasserArray = data
-					.getItem(ArchivParametrieren.ITEM_URLASSER);
-			urlasserArray.getReferenceValue("BenutzerReferenz")
-			.setSystemObject(connection.getLocalUser());
-			urlasserArray.getTextValue("Ursache").setText(
-					"Ausführung des Programms "
-							+ getClass().getName()
-							+ " am "
-							+ new SimpleDateFormat(
-									CommonDefs.LOGFILE_DATE_FORMAT)
-							.format(connection.getTime()));
-			urlasserArray.getTextValue("Veranlasser").setText(
-					connection.getLocalUser().getName());
-			final Array parameterSatzArray = data
-					.getArray(ArchivParametrieren.ITEM_PARAMETER_SATZ);
+			final Data urlasserArray = data.getItem(ArchivParametrieren.ITEM_URLASSER);
+			urlasserArray.getReferenceValue("BenutzerReferenz").setSystemObject(connection.getLocalUser());
+			urlasserArray.getTextValue("Ursache").setText("AusfÃ¼hrung des Programms " + getClass().getName() + " am "
+					+ new SimpleDateFormat(CommonDefs.LOGFILE_DATE_FORMAT).format(connection.getTime()));
+			urlasserArray.getTextValue("Veranlasser").setText(connection.getLocalUser().getName());
+			final Array parameterSatzArray = data.getArray(ArchivParametrieren.ITEM_PARAMETER_SATZ);
 			parameterSatzArray.setLength(typAtgAspSet.size());
 			String info = "Parametriere zur Archivierung:\n";
 			int i = 0;
 			for (final ObjTypAtgAspKB typAtgAsp : typAtgAspSet) {
-				final Data parameterSatzInhalt = parameterSatzArray
-						.getItem(i++);
+				final Data parameterSatzInhalt = parameterSatzArray.getItem(i++);
 				if (typAtgAsp.kb != null) {
 					parameterSatzInhalt.getArray("Bereich").setLength(1);
-					parameterSatzInhalt.getArray("Bereich").getItem(0)
-					.asReferenceValue().setSystemObject(typAtgAsp.kb);
+					parameterSatzInhalt.getArray("Bereich").getItem(0).asReferenceValue().setSystemObject(typAtgAsp.kb);
 				}
 				parameterSatzInhalt.getArray("DatenSpezifikation").setLength(1);
 
-				final Data datenSpezifikation = parameterSatzInhalt.getArray(
-						"DatenSpezifikation").getItem(0);
+				final Data datenSpezifikation = parameterSatzInhalt.getArray("DatenSpezifikation").getItem(0);
 				if (typAtgAsp.objTyp != null) {
 					datenSpezifikation.getArray("Objekt").setLength(1);
-					datenSpezifikation.getArray("Objekt").getItem(0)
-					.asReferenceValue()
-					.setSystemObject(typAtgAsp.objTyp);
+					datenSpezifikation.getArray("Objekt").getItem(0).asReferenceValue()
+							.setSystemObject(typAtgAsp.objTyp);
 				} else {
 					datenSpezifikation.getArray("Objekt").setLength(0);
 				}
 
 				if (typAtgAsp.atg != null) {
 					datenSpezifikation.getArray("AttributGruppe").setLength(1);
-					datenSpezifikation.getArray("AttributGruppe").getItem(0)
-					.asReferenceValue().setSystemObject(typAtgAsp.atg);
+					datenSpezifikation.getArray("AttributGruppe").getItem(0).asReferenceValue()
+							.setSystemObject(typAtgAsp.atg);
 				} else {
 					datenSpezifikation.getArray("AttributGruppe").setLength(0);
 				}
 
 				if (typAtgAsp.asp != null) {
 					datenSpezifikation.getArray("Aspekt").setLength(1);
-					datenSpezifikation.getArray("Aspekt").getItem(0)
-					.asReferenceValue().setSystemObject(typAtgAsp.asp);
+					datenSpezifikation.getArray("Aspekt").getItem(0).asReferenceValue().setSystemObject(typAtgAsp.asp);
 				} else {
 					datenSpezifikation.getArray("Aspekt").setLength(0);
 				}
-				datenSpezifikation.getUnscaledValue("SimulationsVariante").set(
-						0);
+				datenSpezifikation.getUnscaledValue("SimulationsVariante").set(0);
 
 				info += "  " + typAtgAsp + "\n";
 
-				final Data einstellungen = parameterSatzInhalt
-						.getItem("Einstellungen");
+				final Data einstellungen = parameterSatzInhalt.getItem("Einstellungen");
 				einstellungen.getUnscaledValue("Archivieren").set(1);
 				einstellungen.getArray("Nachfordern").setLength(0);
 				einstellungen.getUnscaledValue("Sichern").set(0);
@@ -271,13 +235,11 @@ ClientSenderInterface, ClientReceiverInterface {
 				final GregorianCalendar cal = new GregorianCalendar();
 				cal.setTimeInMillis(0);
 				cal.add(Calendar.YEAR, 5);
-				einstellungen.getTimeValue("Vorhalten").setMillis(
-						cal.getTimeInMillis());
+				einstellungen.getTimeValue("Vorhalten").setMillis(cal.getTimeInMillis());
 			}
-			Logger.getLogger(getClass().getName()).info(info);
+			LOGGER.info(info);
 
-			parametersatz = new ResultData(parametrierungsObject,
-					vorgabeDescription, System.currentTimeMillis(), data);
+			parametersatz = new ResultData(parametrierungsObject, vorgabeDescription, System.currentTimeMillis(), data);
 			parametersatzSenden();
 		} else {
 			finish("Erzeugung des Datensatzes fehlgeschlagen!", 3);
@@ -290,24 +252,19 @@ ClientSenderInterface, ClientReceiverInterface {
 				connection.sendData(parametersatz);
 				finish("Archiv wurde parametriert.", 0);
 			} catch (final DataNotSubscribedException e) {
-				finish("Kann Parametersatz nicht versenden: "
-						+ e.getLocalizedMessage(), 4);
+				finish("Kann Parametersatz nicht versenden: " + e.getLocalizedMessage(), 4);
 			} catch (final SendSubscriptionNotConfirmed e) {
-				finish("Kann Parametersatz nicht versenden: "
-						+ e.getLocalizedMessage(), 6);
+				finish("Kann Parametersatz nicht versenden: " + e.getLocalizedMessage(), 6);
 			}
 		}
 	}
 
 	@Override
-	public void parseArguments(final ArgumentList argumentList)
-			throws Exception {
-		parametrierungsValidatorInputFile = argumentList.fetchArgument(
-				"-input=../properties/ArchivParametrieren.csv")
+	public void parseArguments(final ArgumentList argumentList) throws Exception {
+		parametrierungsValidatorInputFile = argumentList.fetchArgument("-input=../properties/ArchivParametrieren.csv")
 				.asReadableFile();
 		if (argumentList.hasArgument("-objekt")) {
-			ArchivParametrieren.pidArchiv = argumentList.fetchArgument(
-					"-objekt").asNonEmptyString();
+			pidArchiv = argumentList.fetchArgument("-objekt").asNonEmptyString();
 		}
 		force = argumentList.fetchArgument("-force=nein").booleanValue();
 	}
@@ -332,52 +289,42 @@ ClientSenderInterface, ClientReceiverInterface {
 	 */
 	private void finish(final String message, final int status) {
 		if (status > 0) {
-			Logger.getLogger(getClass().getName()).severe(message);
+			LOGGER.error(message);
 		} else {
-			Logger.getLogger(getClass().getName()).info(message);
+			LOGGER.info(message);
 		}
 
 		if (parametrierungsObject != null) {
-			connection.unsubscribeSender(this, parametrierungsObject,
-					vorgabeDescription);
-			connection.unsubscribeReceiver(this, parametrierungsObject,
-					receiveDescription);
+			connection.unsubscribeSender(this, parametrierungsObject, vorgabeDescription);
+			connection.unsubscribeReceiver(this, parametrierungsObject, receiveDescription);
 		}
 
 		System.exit(status);
 	}
 
 	@Override
-	public void dataRequest(final SystemObject object,
-			final DataDescription dataDescription, final byte state) {
+	public void dataRequest(final SystemObject object, final DataDescription dataDescription, final byte state) {
 		// leer
 	}
 
 	@Override
-	public boolean isRequestSupported(final SystemObject object,
-			final DataDescription dataDescription) {
+	public boolean isRequestSupported(final SystemObject object, final DataDescription dataDescription) {
 		return true;
 	}
 
 	@Override
 	public void update(final ResultData[] results) {
 		for (final ResultData result : results) {
-			if (result.getDataDescription().equals(receiveDescription)
-					&& (result.getData() == null)) {
+			if (result.getDataDescription().equals(receiveDescription) && (result.getData() == null)) {
 				parametersatzErzeugen();
 			}
-			if (result.getDataDescription().equals(receiveDescription)
-					&& (result.getData() != null)) {
-				if (result.getData()
-						.getArray(ArchivParametrieren.ITEM_PARAMETER_SATZ)
-						.getLength() > 0) {
+			if (result.getDataDescription().equals(receiveDescription) && (result.getData() != null)) {
+				if (result.getData().getArray(ArchivParametrieren.ITEM_PARAMETER_SATZ).getLength() > 0) {
 					if (force) {
-						Logger.getLogger(getClass().getName()).warning(
-								"Archiv-Parametrierung wird ueberschrieben!");
+						LOGGER.warning("Archiv-Parametrierung wird ueberschrieben!");
 						parametersatzErzeugen();
 					} else {
-						finish("Archiv-Parametrierung ist bereits parametriert.",
-								2);
+						finish("Archiv-Parametrierung ist bereits parametriert.", 2);
 					}
 				} else {
 					parametersatzErzeugen();
@@ -397,24 +344,19 @@ ClientSenderInterface, ClientReceiverInterface {
 
 		private final ConfigurationArea kb;
 
-		private ObjTypAtgAspKB(final String objTypPid, final String atgPid,
-				final String aspPid, final String kbPid) {
-			final DataModel model = ArchivParametrieren.this.connection
-					.getDataModel();
+		private ObjTypAtgAspKB(final String objTypPid, final String atgPid, final String aspPid, final String kbPid) {
+			final DataModel model = ArchivParametrieren.this.connection.getDataModel();
 
 			if (objTypPid != null) {
 				objTyp = model.getObject(objTypPid.trim());
 				if (objTyp != null) {
 					if (objTyp instanceof SystemObjectType) {
-						Logger.getLogger(getClass().getName()).finer(
-								"Füge Typ " + objTyp.getName() + " hinzu");
+						LOGGER.finer("FÃ¼ge Typ " + objTyp.getName() + " hinzu");
 					} else {
-						Logger.getLogger(getClass().getName()).finer(
-								"Füge Objekt " + objTyp.getName() + " hinzu");
+						LOGGER.finer("FÃ¼ge Objekt " + objTyp.getName() + " hinzu");
 					}
 				} else {
-					throw new IllegalArgumentException("Pid " + objTypPid
-							+ " ist kein Objekt oder Typ");
+					throw new IllegalArgumentException("Pid " + objTypPid + " ist kein Objekt oder Typ");
 				}
 			} else {
 				objTyp = null;
@@ -422,11 +364,9 @@ ClientSenderInterface, ClientReceiverInterface {
 			if (atgPid != null) {
 				atg = model.getAttributeGroup(atgPid.trim());
 				if (atg != null) {
-					Logger.getLogger(getClass().getName()).finer(
-							"Füge Atg " + atg.getName() + " hinzu");
+					LOGGER.finer("FÃ¼ge Atg " + atg.getName() + " hinzu");
 				} else {
-					throw new IllegalArgumentException("Pid " + atgPid
-							+ " ist keine Attributgruppe");
+					throw new IllegalArgumentException("Pid " + atgPid + " ist keine Attributgruppe");
 				}
 			} else {
 				atg = null;
@@ -434,11 +374,9 @@ ClientSenderInterface, ClientReceiverInterface {
 			if (aspPid != null) {
 				asp = model.getAspect(aspPid.trim());
 				if (asp != null) {
-					Logger.getLogger(getClass().getName()).finer(
-							"Füge Asp " + asp.getName() + " hinzu");
+					LOGGER.finer("FÃ¼ge Asp " + asp.getName() + " hinzu");
 				} else {
-					throw new IllegalArgumentException("Pid " + aspPid
-							+ " ist kein Aspekt");
+					throw new IllegalArgumentException("Pid " + aspPid + " ist kein Aspekt");
 				}
 			} else {
 				asp = null;
@@ -446,11 +384,9 @@ ClientSenderInterface, ClientReceiverInterface {
 			if (kbPid != null) {
 				kb = model.getConfigurationArea(kbPid.trim());
 				if (kb != null) {
-					Logger.getLogger(getClass().getName()).finer(
-							"Füge KB " + kb.getName() + " hinzu");
+					LOGGER.finer("FÃ¼ge KB " + kb.getName() + " hinzu");
 				} else {
-					throw new IllegalArgumentException("Pid " + kbPid
-							+ " ist kein Konfigurationsbereich");
+					throw new IllegalArgumentException("Pid " + kbPid + " ist kein Konfigurationsbereich");
 				}
 			} else {
 				kb = null;
@@ -459,9 +395,8 @@ ClientSenderInterface, ClientReceiverInterface {
 
 		@Override
 		public String toString() {
-			return "Obj/Typ: " + (objTyp != null ? objTyp.getPid() : "*")
-					+ ", Atg: " + (atg != null ? atg.getPid() : "*")
-					+ ", Asp: " + (asp != null ? asp.getPid() : "*") + ", KB: "
+			return "Obj/Typ: " + (objTyp != null ? objTyp.getPid() : "*") + ", Atg: "
+					+ (atg != null ? atg.getPid() : "*") + ", Asp: " + (asp != null ? asp.getPid() : "*") + ", KB: "
 					+ (kb != null ? kb.getPid() : "*");
 		}
 

@@ -2,15 +2,15 @@
 
 Version: 0.0.4
 
-## Übersicht
+## Ãœbersicht
 
-Das Paket enthält ein Tool zur Analyse eines Datenverteiler-Archivs.
+Das Paket enthÃ¤lt ein Tool zur Analyse eines Datenverteiler-Archivs.
 Eingebunden ist:
 
-### ArchivSizer - ein Tool zur Größenanalyse auf Basis einer Filesystem-Analyse
+### ArchivSizer - ein Tool zur GrÃ¶ÃŸenanalyse auf Basis einer Filesystem-Analyse
   
-Das Tool durchläuft ausgehend vom Root-Verzeichnis des Archivs das Dateisystems und rekonstruiert aus der Verzeichnisstruktur die Datenspezifikationen der im Archiv hinterlegten Daten.  
-Für jede Datenspezifikation wird die Anzahl der gespeicherten Dateien und die Gesamtgröße ermittelt.
+Das Tool durchlÃ¤uft ausgehend vom Root-Verzeichnis des Archivs das Dateisystems und rekonstruiert aus der Verzeichnisstruktur die Datenspezifikationen der im Archiv hinterlegten Daten.  
+FÃ¼r jede Datenspezifikation wird die Anzahl der gespeicherten Dateien und die GesamtgrÃ¶ÃŸe ermittelt.
   
 Aufrufparameter sind neben den Standard-Datenverteiler-Parametern:
 
@@ -23,14 +23,14 @@ Die Ausgabe erfolgt als CSV-Datei mit Semikolon als Trenner im Format:
 
 Valid wird markiert mit:
 
-- ***** für nicht ungültige Objekte (gültig in einer früheren Version) 
-- **-** für nicht vorhandene Objekte (die Konfiguration liefert für die ermittelte ID kein Objekt)
-- **<leer>** für gültige Objekte
+- ***** fÃ¼r nicht ungÃ¼ltige Objekte (gÃ¼ltig in einer frÃ¼heren Version) 
+- **-** fÃ¼r nicht vorhandene Objekte (die Konfiguration liefert fÃ¼r die ermittelte ID kein Objekt)
+- **<leer>** fÃ¼r gÃ¼ltige Objekte
 
-Die Einträge werden nach der Größe in Bytes absteigend sortiert ausgegeben.
+Die EintrÃ¤ge werden nach der GrÃ¶ÃŸe in Bytes absteigend sortiert ausgegeben.
 
-Für ungültige Objekte wird gegebenenfalls die ID ausgegeben. Das gilt auch für Aspekte und Attributgruppen.
-Die verschiedenen Datenarten und Simulationsvarianten werden nicht berücksichtigt.
+FÃ¼r ungÃ¼ltige Objekte wird gegebenenfalls die ID ausgegeben. Das gilt auch fÃ¼r Aspekte und Attributgruppen.
+Die verschiedenen Datenarten und Simulationsvarianten werden nicht berÃ¼cksichtigt.
   
 ## Versionsgeschichte
 
@@ -41,7 +41,7 @@ Die verschiedenen Datenarten und Simulationsvarianten werden nicht berücksichtig
 ## Kontakt
 
 BitCtrl Systems GmbH  
-Weißenfelser Straße 67  
+WeiÃŸenfelser StraÃŸe 67  
 04229 Leipzig  
 Phone: +49 341-490670  
 mailto: info@bitctrl.de  

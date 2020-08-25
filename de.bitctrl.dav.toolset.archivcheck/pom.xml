@@ -60,7 +60,16 @@
 				<configuration>
 					<skipAssembly>false</skipAssembly>
 				</configuration>
+				<executions>
+					<execution>
+			            <phase>verify</phase>
+			            <goals>
+			            	<goal>single</goal>
+			            </goals>
+		            </execution>
+				</executions>
 			</plugin>
+
 		</plugins>
 	</build>
 

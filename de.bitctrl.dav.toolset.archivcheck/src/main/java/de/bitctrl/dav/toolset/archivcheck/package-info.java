@@ -18,12 +18,12 @@
  *
  * Contact Information:
  * BitCtrl Systems GmbH
- * Weiﬂenfelser Straﬂe 67
+ * Wei√üenfelser Stra√üe 67
  * 04229 Leipzig
  * Phone: +49 341-490670
  * mailto: info@bitctrl.de
  */
 
-/** Allgemeine Tools f¸r die Arbeit mit Datenverteiler-Projekten. */
+/** Allgemeine Tools f√ºr die Arbeit mit Datenverteiler-Projekten. */
 package de.bitctrl.dav.toolset.archivcheck;
 

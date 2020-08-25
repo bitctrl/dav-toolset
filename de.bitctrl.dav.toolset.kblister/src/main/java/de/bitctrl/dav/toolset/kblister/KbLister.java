@@ -18,7 +18,7 @@
  *
  * Contact Information:
  * BitCtrl Systems GmbH
- * Weiﬂenfelser Straﬂe 67
+ * Wei√üenfelser Stra√üe 67
  * 04229 Leipzig
  * Phone: +49 341-490670
  * mailto: info@bitctrl.de
@@ -26,22 +26,14 @@
 package de.bitctrl.dav.toolset.kblister;
 
 import java.util.Comparator;
-import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
-import java.util.SortedSet;
 import java.util.TreeMap;
 import java.util.TreeSet;
 
-import de.bitctrl.dav.toolset.kblister.KbLister.PidComparator;
 import de.bsvrz.dav.daf.main.ClientDavInterface;
 import de.bsvrz.dav.daf.main.Data;
-import de.bsvrz.dav.daf.main.Data.Array;
-import de.bsvrz.dav.daf.main.DataDescription;
-import de.bsvrz.dav.daf.main.ResultData;
-import de.bsvrz.dav.daf.main.config.Aspect;
-import de.bsvrz.dav.daf.main.config.AttributeGroup;
 import de.bsvrz.dav.daf.main.config.ConfigurationArea;
 import de.bsvrz.dav.daf.main.config.DataModel;
 import de.bsvrz.dav.daf.main.config.SystemObject;
@@ -59,10 +51,10 @@ import de.bsvrz.sys.funclib.commandLineArgs.ArgumentList;
  */
 public class KbLister implements StandardApplication {
 
-	public class PidComparator implements Comparator<SystemObject> {
+	private class PidComparator implements Comparator<SystemObject> {
 
 		@Override
-		public int compare(SystemObject o1, SystemObject o2) {
+		public int compare(final SystemObject o1, final SystemObject o2) {
 			return o1.getPid().compareTo(o2.getPid());
 		}
 	}
@@ -71,27 +63,28 @@ public class KbLister implements StandardApplication {
 
 	@Override
 	public void parseArguments(final ArgumentList argumentList) throws Exception {
+		// es werden keine zus√§tzlichen Argumente erwartet
 	}
 
 	@Override
 	public void initialize(final ClientDavInterface connection) throws Exception {
 
-		DataModel model = connection.getDataModel();
+		final DataModel model = connection.getDataModel();
 
 		Set<ConfigurationArea> allKbSortedPerPid = new TreeSet<>(new Comparator<ConfigurationArea>() {
 
 			@Override
-			public int compare(ConfigurationArea o1, ConfigurationArea o2) {
+			public int compare(final ConfigurationArea o1, final ConfigurationArea o2) {
 				return o1.getPid().compareTo(o2.getPid());
 			}
 		});
 
 		for (SystemObject obj : model.getTypeTypeObject().getElements()) {
-			SystemObjectType type = (SystemObjectType) obj;
-			TreeSet<ConfigurationArea> kbs = new TreeSet<ConfigurationArea>(new PidComparator());
+			final SystemObjectType type = (SystemObjectType) obj;
+			final TreeSet<ConfigurationArea> kbs = new TreeSet<>(new PidComparator());
 
 			for (SystemObject element : type.getElements()) {
-				ConfigurationArea configurationArea = element.getConfigurationArea();
+				final ConfigurationArea configurationArea = element.getConfigurationArea();
 				kbs.add(configurationArea);
 				allKbSortedPerPid.add(configurationArea);
 			}
@@ -112,8 +105,8 @@ public class KbLister implements StandardApplication {
 		System.out.println("================================\n");
 		
 		for (ConfigurationArea kb : allKbSortedPerPid) {
-			Data data = kb.getConfigurationData(
-					kb.getDataModel().getAttributeGroup("atg.konfigurationsBereich‹bernahmeInformationen"));
+			final Data data = kb.getConfigurationData(
+					kb.getDataModel().getAttributeGroup("atg.konfigurationsBereich√úbernahmeInformationen"));
 			if (data != null) {
 				System.out.println(kb.getPid() + "\t" + kb.getNameOrPidOrId() + "\t" + ": "
 						+ data.getUnscaledValue("aktivierbareVersion").longValue());
@@ -126,7 +119,7 @@ public class KbLister implements StandardApplication {
 	}
 
 	/**
-	 * F¸hrt das Tool zur Auflistung der KB aus.
+	 * F√ºhrt das Tool zur Auflistung der KB aus.
 	 * 
 	 * @param args
 	 *            die Kommandozeilenparameter

@@ -18,7 +18,7 @@
  *
  * Contact Information:
  * BitCtrl Systems GmbH
- * Weiﬂenfelser Straﬂe 67
+ * Wei√üenfelser Stra√üe 67
  * 04229 Leipzig
  * Phone: +49 341-490670
  * mailto: info@bitctrl.de
@@ -26,7 +26,7 @@
 package de.bitctrl.dav.toolset.system;
 
 /**
- * Allgemeine Definitionen f¸r alle eingebundenen Tools der SWE.
+ * Allgemeine Definitionen f√ºr alle eingebundenen Tools der SWE.
  *
  * @author BitCtrl Systems GmbH, Uwe Peuker
  */
@@ -36,6 +36,6 @@ public final class CommonDefs {
 		// es gibt keine Instanzen der Klasse.
 	}
 
-	/** das Datumsformat f¸r Logmeldungen. */
+	/** das Datumsformat f√ºr Logmeldungen. */
 	public static final String LOGFILE_DATE_FORMAT = "dd.MM.yyyy HH:mm:ss.SSS";
 }

@@ -18,7 +18,7 @@
  *
  * Contact Information:
  * BitCtrl Systems GmbH
- * Weißenfelser Straße 67
+ * WeiÃŸenfelser StraÃŸe 67
  * 04229 Leipzig
  * Phone: +49 341-490670
  * mailto: info@bitctrl.de
@@ -28,7 +28,6 @@ package de.bitctrl.dav.toolset.archivcheck;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.PrintWriter;
-import java.io.RandomAccessFile;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -47,7 +46,7 @@ import de.bsvrz.sys.funclib.commandLineArgs.ArgumentList;
 
 /**
  *
- * Tool zum Bestimmen der Größe eines Archivs im Filesystem.
+ * Tool zum Bestimmen der GrÃ¶ÃŸe eines Archivs im Filesystem.
  *
  * @author BitCtrl Systems GmbH, Uwe Peuker
  */
@@ -64,8 +63,7 @@ public class ArchivSizer implements StandardApplication {
 		private final SizeSet size;
 		private final File sub;
 
-		public ResultSet(final Object object, final Object atg, final Object aspect, final SizeSet size,
-				final File sub) {
+		ResultSet(final Object object, final Object atg, final Object aspect, final SizeSet size, final File sub) {
 			this.object = object;
 			this.atg = atg;
 			this.aspect = aspect;
@@ -100,7 +98,7 @@ public class ArchivSizer implements StandardApplication {
 	private DataModel model;
 	private Object currentAtg;
 
-	private final List<ResultSet> results = new ArrayList<ResultSet>();
+	private final List<ResultSet> results = new ArrayList<>();
 	private Map<AkkumulationKey, SizeSet> akkumulation = new LinkedHashMap<>();
 
 	@Override
@@ -120,9 +118,12 @@ public class ArchivSizer implements StandardApplication {
 			throw new InvalidArgumentException(baseDir + " ist kein Verzeichnis");
 		}
 
-		for (final File child : startDir.listFiles()) {
-			if (child.getName().startsWith(ArchivSizer.OBJ_DIR_PREFIX)) {
-				parseObjEntry(child, "");
+		final File[] listFiles = startDir.listFiles();
+		if (listFiles != null) {
+			for (final File child : listFiles) {
+				if (child.getName().startsWith(ArchivSizer.OBJ_DIR_PREFIX)) {
+					parseObjEntry(child, "");
+				}
 			}
 		}
 
@@ -133,19 +134,19 @@ public class ArchivSizer implements StandardApplication {
 			}
 		});
 
-		PrintWriter output = new PrintWriter(new FileWriter(outputFile));
-		printheader(output);
-		for (final ResultSet set : results) {
-			printResult(output, set);
+		try (PrintWriter output = new PrintWriter(new FileWriter(outputFile))) {
+			printheader(output);
+			for (final ResultSet set : results) {
+				printResult(output, set);
+			}
 		}
-		output.close();
 
-		output = new PrintWriter(new FileWriter(akkFile));
-		printAkkHeader(output);
-		for (final Entry<AkkumulationKey, SizeSet> entry : akkumulation.entrySet()) {
-			printAkkResult(output, entry.getKey(), entry.getValue());
+		try (PrintWriter output = new PrintWriter(new FileWriter(akkFile))) {
+			printAkkHeader(output);
+			for (final Entry<AkkumulationKey, SizeSet> entry : akkumulation.entrySet()) {
+				printAkkResult(output, entry.getKey(), entry.getValue());
+			}
 		}
-		output.close();
 
 		System.exit(0);
 	}
@@ -189,7 +190,7 @@ public class ArchivSizer implements StandardApplication {
 		output.println("valid;objekt;attributgruppe;aspekt;size;datsize;idxsize;othersize;datsizerel;count;path");
 	}
 
-	private void printAkkResult(PrintWriter output, AkkumulationKey key, SizeSet value) {
+	private void printAkkResult(final PrintWriter output, final AkkumulationKey key, final SizeSet value) {
 		final StringBuffer result = new StringBuffer(200);
 		result.append(value.getSetCount());
 		result.append(';');
@@ -219,16 +220,19 @@ public class ArchivSizer implements StandardApplication {
 	private void parseObjEntry(final File child, final String parentPath) {
 		final String path = parentPath + child.getName().substring(ArchivSizer.OBJ_DIR_PREFIX.length());
 
-		for (final File sub : child.listFiles()) {
-			if (sub.getName().startsWith(ArchivSizer.OBJ_DIR_PREFIX)) {
-				parseObjEntry(sub, path);
-			} else if (sub.getName().startsWith(ArchivSizer.ATG_DIR_PREFIX)) {
-				final Long longVal = Long.parseLong(path);
-				currentObject = model.getObject(longVal);
-				if (currentObject == null) {
-					currentObject = longVal;
+		final File[] listFiles = child.listFiles();
+		if (listFiles != null) {
+			for (final File sub : listFiles) {
+				if (sub.getName().startsWith(ArchivSizer.OBJ_DIR_PREFIX)) {
+					parseObjEntry(sub, path);
+				} else if (sub.getName().startsWith(ArchivSizer.ATG_DIR_PREFIX)) {
+					final Long longVal = Long.parseLong(path);
+					currentObject = model.getObject(longVal);
+					if (currentObject == null) {
+						currentObject = longVal;
+					}
+					parseAtgEntry(sub, "");
 				}
-				parseAtgEntry(sub, "");
 			}
 		}
 	}
@@ -236,16 +240,19 @@ public class ArchivSizer implements StandardApplication {
 	private void parseAtgEntry(final File child, final String parentPath) {
 		final String path = parentPath + child.getName().substring(ArchivSizer.ATG_DIR_PREFIX.length());
 
-		for (final File sub : child.listFiles()) {
-			if (sub.getName().startsWith(ArchivSizer.ATG_DIR_PREFIX)) {
-				parseAtgEntry(sub, path);
-			} else if (sub.getName().startsWith(ArchivSizer.ASP_DIR_PREFIX)) {
-				final Long longVal = Long.parseLong(path);
-				currentAtg = model.getObject(longVal);
-				if (currentAtg == null) {
-					currentAtg = longVal;
+		final File[] listFiles = child.listFiles();
+		if (listFiles != null) {
+			for (final File sub : listFiles) {
+				if (sub.getName().startsWith(ArchivSizer.ATG_DIR_PREFIX)) {
+					parseAtgEntry(sub, path);
+				} else if (sub.getName().startsWith(ArchivSizer.ASP_DIR_PREFIX)) {
+					final Long longVal = Long.parseLong(path);
+					currentAtg = model.getObject(longVal);
+					if (currentAtg == null) {
+						currentAtg = longVal;
+					}
+					parseAspEntry(sub, "");
 				}
-				parseAspEntry(sub, "");
 			}
 		}
 	}
@@ -253,25 +260,28 @@ public class ArchivSizer implements StandardApplication {
 	private void parseAspEntry(final File child, final String parentPath) {
 		final String path = parentPath + child.getName().substring(ArchivSizer.ASP_DIR_PREFIX.length());
 
-		for (final File sub : child.listFiles()) {
-			if (sub.getName().startsWith(ArchivSizer.ASP_DIR_PREFIX)) {
-				parseAspEntry(sub, path);
-			} else {
-				final Long longVal = Long.parseLong(path);
-				Object currentAspect = model.getObject(longVal);
-				if (currentAspect == null) {
-					currentAspect = longVal;
+		final File[] listFiles = child.listFiles();
+		if (listFiles != null) {
+			for (final File sub : listFiles) {
+				if (sub.getName().startsWith(ArchivSizer.ASP_DIR_PREFIX)) {
+					parseAspEntry(sub, path);
+				} else {
+					final Long longVal = Long.parseLong(path);
+					Object currentAspect = model.getObject(longVal);
+					if (currentAspect == null) {
+						currentAspect = longVal;
+					}
+					final SizeSet size = getSizeFor(sub);
+					final ResultSet resultSet = new ResultSet(currentObject, currentAtg, currentAspect, size, sub);
+					results.add(resultSet);
+					akkumulate(resultSet);
 				}
-				final SizeSet size = getSizeFor(sub);
-				ResultSet resultSet = new ResultSet(currentObject, currentAtg, currentAspect, size, sub);
-				results.add(resultSet);
-				akkumulate(resultSet);
 			}
 		}
 	}
 
-	private void akkumulate(ResultSet resultSet) {
-		AkkumulationKey akkumulationKey = new AkkumulationKey(resultSet.atg, resultSet.aspect);
+	private void akkumulate(final ResultSet resultSet) {
+		final AkkumulationKey akkumulationKey = new AkkumulationKey(resultSet.atg, resultSet.aspect);
 		SizeSet sizeSet = akkumulation.get(akkumulationKey);
 		if (sizeSet == null) {
 			sizeSet = new SizeSet();
@@ -286,9 +296,12 @@ public class ArchivSizer implements StandardApplication {
 		final SizeSet result = new SizeSet();
 
 		if (child.isDirectory()) {
-			for (final File sub : child.listFiles()) {
-				final SizeSet dirSize = getSizeFor(sub);
-				result.add(dirSize);
+			final File[] listFiles = child.listFiles();
+			if (listFiles != null) {
+				for (final File sub : listFiles) {
+					final SizeSet dirSize = getSizeFor(sub);
+					result.add(dirSize);
+				}
 			}
 		} else {
 			if (child.getName().endsWith(".dat")) {
@@ -303,14 +316,14 @@ public class ArchivSizer implements StandardApplication {
 	}
 
 	/**
-	 * Führt das Tool zur Bestimmung der Archivgröße aus.
+	 * FÃ¼hrt das Tool zur Bestimmung der ArchivgrÃ¶ÃŸe aus.
 	 *
 	 * Ausgehend vom Wurzelverzeichnis des Archivs wird aus der
 	 * Verzeichnis-Struktur die jeweilige Datenspezifikation ermittelt und die
-	 * Anzahl und Größe der im jeweiligen Zweig befindlichen Daten
+	 * Anzahl und GrÃ¶ÃŸe der im jeweiligen Zweig befindlichen Daten
 	 * zusammengefasst. Das Ergebnis wird als Textdatei ausgegeben.
 	 *
-	 * Parameter sind neben den üblichen Datenverteiler-Parametern:
+	 * Parameter sind neben den Ã¼blichen Datenverteiler-Parametern:
 	 * <ul>
 	 * <li><b>-baseDir=&lt;verzeichnis&gt;</b> das Basisverzeichnis des
 	 * Archivsystems</li>

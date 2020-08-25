@@ -18,7 +18,7 @@
  *
  * Contact Information:
  * BitCtrl Systems GmbH
- * Weißenfelser Straße 67
+ * WeiÃŸenfelser StraÃŸe 67
  * 04229 Leipzig
  * Phone: +49 341-490670
  * mailto: info@bitctrl.de
@@ -32,7 +32,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
-import java.util.logging.Logger;
 
 import de.bsvrz.dav.daf.main.ClientDavInterface;
 import de.bsvrz.dav.daf.main.ClientReceiverInterface;
@@ -55,6 +54,7 @@ import de.bsvrz.dav.daf.main.config.SystemObjectType;
 import de.bsvrz.sys.funclib.application.StandardApplication;
 import de.bsvrz.sys.funclib.application.StandardApplicationRunner;
 import de.bsvrz.sys.funclib.commandLineArgs.ArgumentList;
+import de.bsvrz.sys.funclib.debug.Debug;
 
 /**
  * Applikation, um die Parametrierungsapplikation automatisiert zu
@@ -66,11 +66,11 @@ import de.bsvrz.sys.funclib.commandLineArgs.ArgumentList;
  * koennen.
  *
  * @author BitCtrl Systems GmbH, Albrecht Uhlmann
- * @version $Id: ParametrierungParametrieren.java 45222 2013-07-26 06:44:46Z
- *          hoesel $
  */
-public class ParametrierungParametrieren implements StandardApplication,
-ClientSenderInterface, ClientReceiverInterface {
+public class ParametrierungParametrieren
+		implements StandardApplication, ClientSenderInterface, ClientReceiverInterface {
+
+	private static final Debug LOGGER = Debug.getLogger();
 
 	private static final String ITEM_PARAMETER_SATZ = "ParameterSatz";
 
@@ -97,7 +97,7 @@ ClientSenderInterface, ClientReceiverInterface {
 	 */
 	private static final String ATG_PARAMETRIERUNG = "atg.parametrierung";
 
-	private static String pidParametrierung = "";
+	private String pidParametrierung = "";
 
 	private ResultData parametersatz;
 
@@ -111,25 +111,22 @@ ClientSenderInterface, ClientReceiverInterface {
 
 	private void readCsv() {
 		String content;
-		Logger.getLogger(getClass().getName()).info(
-				"Beginne Einlesen von "
-						+ parametrierungsValidatorInputFile.getPath());
+		LOGGER.info("Beginne Einlesen von " + parametrierungsValidatorInputFile.getPath());
 
-		try (RandomAccessFile sourceFile = new RandomAccessFile(
-				parametrierungsValidatorInputFile.getAbsolutePath(), "r")) {
+		try (RandomAccessFile sourceFile = new RandomAccessFile(parametrierungsValidatorInputFile.getAbsolutePath(),
+				"r")) {
 			int i = 0;
 			while ((content = sourceFile.readLine()) != null) {
 				if ((i++ == 0) || content.startsWith("#")) {
 					continue;
 				}
-				Logger.getLogger(getClass().getName()).finer(content);
+				LOGGER.finer(content);
 				final String[] values = content.split(";");
 				final List<String> objTypPidList = new ArrayList<>();
 				final List<String> atgPidList = new ArrayList<>();
 				final List<String> kbPidList = new ArrayList<>();
 
-				final String[] objTypPidArray = values[ParametrierungParametrieren.OBJ_TYP_SPALTE]
-						.split(",");
+				final String[] objTypPidArray = values[ParametrierungParametrieren.OBJ_TYP_SPALTE].split(",");
 				for (final String objTypPid : objTypPidArray) {
 					objTypPidList.add(objTypPid);
 				}
@@ -145,86 +142,65 @@ ClientSenderInterface, ClientReceiverInterface {
 						kbPidList.add(kbPid);
 					}
 				}
-				objTypAtgKBList.add(new ObjTypAtgKB(objTypPidList, atgPidList,
-						kbPidList));
+				objTypAtgKBList.add(new ObjTypAtgKB(objTypPidList, atgPidList, kbPidList));
 			}
 			sourceFile.close();
 		} catch (final IOException e) {
-			Logger.getLogger(getClass().getName()).warning(
-					e.getLocalizedMessage());
+			LOGGER.warning(e.getLocalizedMessage());
 		} catch (final ArrayIndexOutOfBoundsException e) {
-			Logger.getLogger(getClass().getName()).fine(
-					"Leerzeile(n) am Ende der CSV");
+			LOGGER.fine("Leerzeile(n) am Ende der CSV", e);
 		}
 	}
 
 	/*
 	 * (Kein Javadoc)
 	 *
-	 * @see
-	 * sys.funclib.application.StandardApplication#initialize(stauma.dav.clientside
-	 * .ClientDavInterface)
+	 * @see sys.funclib.application.StandardApplication#initialize(stauma.dav.
+	 * clientside .ClientDavInterface)
 	 */
 	@Override
 	public void initialize(final ClientDavInterface dav) throws Exception {
 		Locale.setDefault(Locale.GERMANY);
 		this.connection = dav;
 		final DataModel model = dav.getDataModel();
-		parametrierungsObject = model.getObject(ParametrierungParametrieren.pidParametrierung);
+		parametrierungsObject = model.getObject(pidParametrierung);
 		if (null == parametrierungsObject) {
-			Logger.getLogger(getClass().getName())
-			.info("Angegebenes Parametrierungsobjekt existiert nicht, nehme AOE...");
+			LOGGER.info("Angegebenes Parametrierungsobjekt existiert nicht, nehme AOE...");
 			parametrierungsObject = dav.getLocalConfigurationAuthority();
 		}
 		readCsv();
 		if (objTypAtgKBList.isEmpty()) {
 			finish("Nichts zu parametrieren (String)", 1);
 		} else {
-			Logger.getLogger(getClass().getName()).info(
-					objTypAtgKBList.size()
-					+ " Datenidentifikationen werden behandelt");
-			AttributeGroup atg;
+			LOGGER.info(objTypAtgKBList.size() + " Datenidentifikationen werden behandelt");
 			for (final ObjTypAtgKB objTypAtgKB : objTypAtgKBList) {
-				Logger.getLogger(getClass().getName()).finer(
-						"Füge Datenidentifikationen " + objTypAtgKB + " hinzu");
+				LOGGER.finer("FÃ¼ge Datenidentifikationen " + objTypAtgKB + " hinzu");
 			}
-			Logger.getLogger(getClass().getName())
-			.info(objTypAtgKBList.size()
-					+ " Datenidentifikationen werden zur Parametrierung freigegeben");
-			atg = model.getAttributeGroup(ParametrierungParametrieren.ATG_PARAMETRIERUNG);
+			LOGGER.info(objTypAtgKBList.size() + " Datenidentifikationen werden zur Parametrierung freigegeben");
+			final AttributeGroup atg = model.getAttributeGroup(ParametrierungParametrieren.ATG_PARAMETRIERUNG);
 			Aspect asp = model.getAspect("asp.parameterVorgabe");
 			vorgabeDescription = new DataDescription(atg, asp);
-			dav.subscribeSender(this, parametrierungsObject,
-					vorgabeDescription, SenderRole.sender());
+			dav.subscribeSender(this, parametrierungsObject, vorgabeDescription, SenderRole.sender());
 
 			asp = model.getAspect("asp.parameterSoll");
 			receiveDescription = new DataDescription(atg, asp);
-			dav.subscribeReceiver(this, parametrierungsObject,
-					receiveDescription, ReceiveOptions.normal(),
+			dav.subscribeReceiver(this, parametrierungsObject, receiveDescription, ReceiveOptions.normal(),
 					ReceiverRole.receiver());
-			Logger.getLogger(getClass().getName()).fine(
-					"Initialisierung erfolgreich");
+			LOGGER.fine("Initialisierung erfolgreich");
 		}
 	}
 
 	/** Hier findet die eigentliche Arbeit statt. */
 	private void parametersatzErzeugen() {
-		final Data data = connection.createData(connection.getDataModel()
-				.getAttributeGroup(ParametrierungParametrieren.ATG_PARAMETRIERUNG));
+		final Data data = connection.createData(
+				connection.getDataModel().getAttributeGroup(ParametrierungParametrieren.ATG_PARAMETRIERUNG));
 		if (data != null) {
 			final Data urlasserArray = data.getItem(ParametrierungParametrieren.ITEM_URLASSER);
-			urlasserArray.getReferenceValue("BenutzerReferenz")
-			.setSystemObject(connection.getLocalUser());
-			urlasserArray.getTextValue("Ursache").setText(
-					"Ausführung des Programms "
-							+ getClass().getName()
-							+ " am "
-							+ new SimpleDateFormat(CommonDefs.LOGFILE_DATE_FORMAT).format(
-									connection.getTime()));
-			urlasserArray.getTextValue("Veranlasser").setText(
-					connection.getLocalUser().getName());
-			final Array parameterSatzArray = data
-					.getArray(ParametrierungParametrieren.ITEM_PARAMETER_SATZ);
+			urlasserArray.getReferenceValue("BenutzerReferenz").setSystemObject(connection.getLocalUser());
+			urlasserArray.getTextValue("Ursache").setText("AusfÃ¼hrung des Programms " + getClass().getName() + " am "
+					+ new SimpleDateFormat(CommonDefs.LOGFILE_DATE_FORMAT).format(connection.getTime()));
+			urlasserArray.getTextValue("Veranlasser").setText(connection.getLocalUser().getName());
+			final Array parameterSatzArray = data.getArray(ParametrierungParametrieren.ITEM_PARAMETER_SATZ);
 			parameterSatzArray.setLength(objTypAtgKBList.size());
 			String infoLogText = "Erfolgreich parametrierte Datenidentifikationen:\n";
 			for (int dataIdentIdx = 0; dataIdentIdx < objTypAtgKBList.size(); dataIdentIdx++) {
@@ -234,43 +210,33 @@ ClientSenderInterface, ClientReceiverInterface {
 				final List<AttributeGroup> atgList = objTypAtgKBi.atgList;
 				final List<ConfigurationArea> kbList = objTypAtgKBi.kbList;
 
-				final Data parameterSatzInhalt = parameterSatzArray
-						.getItem(dataIdentIdx);
-				parameterSatzInhalt.getArray("Bereich")
-				.setLength(kbList.size());
+				final Data parameterSatzInhalt = parameterSatzArray.getItem(dataIdentIdx);
+				parameterSatzInhalt.getArray("Bereich").setLength(kbList.size());
 				for (int kbIdx = 0; kbIdx < kbList.size(); kbIdx++) {
-					parameterSatzInhalt.getArray("Bereich").getItem(kbIdx)
-					.asReferenceValue()
-					.setSystemObject(kbList.get(kbIdx));
+					parameterSatzInhalt.getArray("Bereich").getItem(kbIdx).asReferenceValue()
+							.setSystemObject(kbList.get(kbIdx));
 				}
 
 				parameterSatzInhalt.getArray("DatenSpezifikation").setLength(1);
-				final Data datenSpezifikation = parameterSatzInhalt.getArray(
-						"DatenSpezifikation").getItem(0);
-				datenSpezifikation.getArray("Objekt").setLength(
-						objTypList.size());
+				final Data datenSpezifikation = parameterSatzInhalt.getArray("DatenSpezifikation").getItem(0);
+				datenSpezifikation.getArray("Objekt").setLength(objTypList.size());
 				for (int objTypIdx = 0; objTypIdx < objTypList.size(); objTypIdx++) {
-					datenSpezifikation.getArray("Objekt").getItem(objTypIdx)
-					.asReferenceValue()
-					.setSystemObject(objTypList.get(objTypIdx));
+					datenSpezifikation.getArray("Objekt").getItem(objTypIdx).asReferenceValue()
+							.setSystemObject(objTypList.get(objTypIdx));
 				}
 
 				final Array atgArray = datenSpezifikation.getArray("AttributGruppe");
 				atgArray.setLength(atgList.size());
 				for (int atgIdx = 0; atgIdx < atgList.size(); atgIdx++) {
-					datenSpezifikation.getArray("AttributGruppe")
-					.getItem(atgIdx).asReferenceValue()
-					.setSystemObject(atgList.get(atgIdx));
+					datenSpezifikation.getArray("AttributGruppe").getItem(atgIdx).asReferenceValue()
+							.setSystemObject(atgList.get(atgIdx));
 				}
 
-				datenSpezifikation.getUnscaledValue("SimulationsVariante").set(
-						0);
-				final Data einstellungen = parameterSatzInhalt
-						.getItem("Einstellungen");
+				datenSpezifikation.getUnscaledValue("SimulationsVariante").set(0);
+				final Data einstellungen = parameterSatzInhalt.getItem("Einstellungen");
 				einstellungen.getUnscaledValue("Parametrieren").set(1);
 			}
-			parametersatz = new ResultData(parametrierungsObject,
-					vorgabeDescription, System.currentTimeMillis(), data);
+			parametersatz = new ResultData(parametrierungsObject, vorgabeDescription, System.currentTimeMillis(), data);
 
 			parametersatzSenden(infoLogText);
 		} else {
@@ -284,11 +250,9 @@ ClientSenderInterface, ClientReceiverInterface {
 				connection.sendData(parametersatz);
 				finish(info, 0);
 			} catch (final DataNotSubscribedException e) {
-				finish("Kann Parametersatz nicht versenden: "
-						+ e.getLocalizedMessage(), 4);
+				finish("Kann Parametersatz nicht versenden: " + e.getLocalizedMessage(), 4);
 			} catch (final SendSubscriptionNotConfirmed e) {
-				finish("Kann Parametersatz nicht versenden: "
-						+ e.getLocalizedMessage(), 6);
+				finish("Kann Parametersatz nicht versenden: " + e.getLocalizedMessage(), 6);
 			}
 		}
 	}
@@ -302,12 +266,10 @@ ClientSenderInterface, ClientReceiverInterface {
 	 */
 	@Override
 	public void parseArguments(final ArgumentList argumentList) throws Exception {
-		parametrierungsValidatorInputFile = argumentList.fetchArgument(
-				"-input=../properties/ParametrierungParametrieren.csv")
-				.asReadableFile();
+		parametrierungsValidatorInputFile = argumentList
+				.fetchArgument("-input=../properties/ParametrierungParametrieren.csv").asReadableFile();
 		if (argumentList.hasArgument("-objekt")) {
-			ParametrierungParametrieren.pidParametrierung = argumentList.fetchArgument("-objekt")
-					.asNonEmptyString();
+			pidParametrierung = argumentList.fetchArgument("-objekt").asNonEmptyString();
 		}
 		force = argumentList.fetchArgument("-force=nein").booleanValue();
 	}
@@ -332,50 +294,39 @@ ClientSenderInterface, ClientReceiverInterface {
 	 */
 	private void finish(final String message, final int status) {
 		if (status > 0) {
-			Logger.getLogger(getClass().getName()).severe(message);
+			LOGGER.error(message);
 		} else {
-			Logger.getLogger(getClass().getName()).info(message);
+			LOGGER.info(message);
 		}
 
 		if (parametrierungsObject != null) {
-			connection.unsubscribeSender(this, parametrierungsObject,
-					vorgabeDescription);
-			connection.unsubscribeReceiver(this, parametrierungsObject,
-					receiveDescription);
+			connection.unsubscribeSender(this, parametrierungsObject, vorgabeDescription);
+			connection.unsubscribeReceiver(this, parametrierungsObject, receiveDescription);
 		}
 
 		System.exit(status);
 	}
 
 	@Override
-	public void dataRequest(final SystemObject object,
-			final DataDescription dataDescription, final byte state) {
+	public void dataRequest(final SystemObject object, final DataDescription dataDescription, final byte state) {
 		// leer
 	}
 
 	@Override
-	public boolean isRequestSupported(final SystemObject object,
-			final DataDescription dataDescription) {
+	public boolean isRequestSupported(final SystemObject object, final DataDescription dataDescription) {
 		return true;
 	}
 
 	@Override
 	public void update(final ResultData[] results) {
 		for (final ResultData result : results) {
-			if (result.getDataDescription().equals(receiveDescription)
-					&& (result.getData() == null)) {
+			if (result.getDataDescription().equals(receiveDescription) && (result.getData() == null)) {
 				parametersatzErzeugen();
 			}
-			if (result.getDataDescription().equals(receiveDescription)
-					&& (result.getData() != null)) {
-				if (result
-						.getData()
-						.getArray(
-								ParametrierungParametrieren.ITEM_PARAMETER_SATZ)
-								.getLength() > 0) {
+			if (result.getDataDescription().equals(receiveDescription) && (result.getData() != null)) {
+				if (result.getData().getArray(ParametrierungParametrieren.ITEM_PARAMETER_SATZ).getLength() > 0) {
 					if (force) {
-						Logger.getLogger(getClass().getName()).warning(
-								"Parametrierung wird überschrieben!");
+						LOGGER.warning("Parametrierung wird Ã¼berschrieben!");
 						parametersatzErzeugen();
 					} else {
 						finish("Parametrierung ist bereits parametriert", 2);
@@ -396,27 +347,22 @@ ClientSenderInterface, ClientReceiverInterface {
 
 		private final List<ConfigurationArea> kbList = new ArrayList<>();
 
-		private ObjTypAtgKB(final List<String> objTypPidList,
-				final List<String> atgPidList, final List<String> kbPidList) {
-			final DataModel model = ParametrierungParametrieren.this.connection
-					.getDataModel();
+		private ObjTypAtgKB(final List<String> objTypPidList, final List<String> atgPidList,
+				final List<String> kbPidList) {
+			final DataModel model = ParametrierungParametrieren.this.connection.getDataModel();
 
 			if (objTypPidList != null) {
 				for (final String objTypPid : objTypPidList) {
 					final SystemObject objTyp = model.getObject(objTypPid.trim());
 					if (objTyp != null) {
 						if (objTyp instanceof SystemObjectType) {
-							Logger.getLogger(getClass().getName()).finer(
-									"Füge Typ " + objTyp.getName() + " hinzu");
+							LOGGER.finer("FÃ¼ge Typ " + objTyp.getName() + " hinzu");
 						} else {
-							Logger.getLogger(getClass().getName()).finer(
-									"Füge Objekt " + objTyp.getName()
-									+ " hinzu");
+							LOGGER.finer("FÃ¼ge Objekt " + objTyp.getName() + " hinzu");
 						}
 						objTypList.add(objTyp);
 					} else {
-						throw new IllegalArgumentException("Pid " + objTypPid
-								+ " ist kein Objekt oder Typ");
+						throw new IllegalArgumentException("Pid " + objTypPid + " ist kein Objekt oder Typ");
 					}
 				}
 			}
@@ -424,26 +370,21 @@ ClientSenderInterface, ClientReceiverInterface {
 				for (final String atgPid : atgPidList) {
 					final AttributeGroup atg = model.getAttributeGroup(atgPid.trim());
 					if (atg != null) {
-						Logger.getLogger(getClass().getName()).finer(
-								"Füge Atg " + atg.getName() + " hinzu");
+						LOGGER.finer("FÃ¼ge Atg " + atg.getName() + " hinzu");
 						atgList.add(atg);
 					} else {
-						throw new IllegalArgumentException("Pid " + atgPid
-								+ " ist keine Attributgruppe");
+						throw new IllegalArgumentException("Pid " + atgPid + " ist keine Attributgruppe");
 					}
 				}
 			}
 			if (kbPidList != null) {
 				for (final String kbPid : kbPidList) {
-					final ConfigurationArea kb = model.getConfigurationArea(kbPid
-							.trim());
+					final ConfigurationArea kb = model.getConfigurationArea(kbPid.trim());
 					if (kb != null) {
 						kbList.add(kb);
-						Logger.getLogger(getClass().getName()).finer(
-								"Füge KB " + kb.getName() + " hinzu");
+						LOGGER.finer("FÃ¼ge KB " + kb.getName() + " hinzu");
 					} else {
-						throw new IllegalArgumentException("Pid " + kbPid
-								+ " ist kein Konfigurationsbereich");
+						throw new IllegalArgumentException("Pid " + kbPid + " ist kein Konfigurationsbereich");
 					}
 				}
 			}

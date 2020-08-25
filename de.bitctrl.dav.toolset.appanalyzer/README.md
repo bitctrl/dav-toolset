@@ -2,9 +2,9 @@
 
 Version: 0.0.1
 
-## ‹bersicht
+## √úbersicht
 
-Das Paket enth‰lt ein Tool zur Analyse der Applikationen eines Datenverteiler-Systems.
+Das Paket enth√§lt ein Tool zur Analyse der Applikationen eines Datenverteiler-Systems.
 
 ### AppAnalyzer
   
@@ -17,12 +17,12 @@ Datenspezifikationen ausgelesen und in die Zieldatei ausgegeben.
 
 ### 1.0.0
 
-- erstes Release (noch nicht verf¸gbar)
+- erstes Release (noch nicht verf√ºgbar)
 
 ## Kontakt
 
 BitCtrl Systems GmbH  
-Weiﬂenfelser Straﬂe 67  
+Wei√üenfelser Stra√üe 67  
 04229 Leipzig  
 Phone: +49 341-490670  
 mailto: info@bitctrl.de  
