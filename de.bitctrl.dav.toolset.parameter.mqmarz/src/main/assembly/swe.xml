@@ -40,16 +40,6 @@
 			<destName>${artifactId}.jar</destName>
 		</file>
 		<file>
-			<source>${project.build.directory}/${artifactId}-${version}-doc-api-javadoc.jar</source>
-			<outputDirectory>${artifactId}</outputDirectory>
-			<destName>${artifactId}-doc-api.zip</destName>
-		</file>
-		<file>
-			<source>${project.build.directory}/${artifactId}-${version}-doc-design-javadoc.jar</source>
-			<outputDirectory>${artifactId}</outputDirectory>
-			<destName>${artifactId}-doc-design.zip</destName>
-		</file>
-		<file>
 			<source>${project.build.directory}/${artifactId}-${version}-sources.jar</source>
 			<outputDirectory>${artifactId}</outputDirectory>
 			<destName>${artifactId}-src.zip</destName>
@@ -65,28 +55,6 @@
 			<destName>${artifactId}-Build-Report.txt</destName>
 		</file>
 		
-<!-- 		
-		<file>
-			<source>${project.build.directory}/${artifactId}-${version}-tests.jar</source>
-			<outputDirectory>${artifactId}</outputDirectory>
-			<destName>${artifactId}-test.jar</destName>
-		</file>
-		<file>
-			<source>${project.build.directory}/${artifactId}-${version}-doc-api-test-javadoc.jar</source>
-			<outputDirectory>${artifactId}</outputDirectory>
-			<destName>${artifactId}-test-doc-api.zip</destName>
-		</file>
-		<file>
-			<source>${project.build.directory}/${artifactId}-${version}-doc-design-test-javadoc.jar</source>
-			<outputDirectory>${artifactId}</outputDirectory>
-			<destName>${artifactId}-test-doc-design.zip</destName>
-		</file>
-		<file>
-			<source>${project.build.directory}/${artifactId}-${version}-test-sources.jar</source>
-			<outputDirectory>${artifactId}</outputDirectory>
-			<destName>${artifactId}-test-src.zip</destName>
-		</file>
--->
 		<file>
 			<source>LICENSE.txt</source>
 			<outputDirectory>${artifactId}</outputDirectory>

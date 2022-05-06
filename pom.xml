@@ -96,36 +96,6 @@
 			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-javadoc-plugin</artifactId>
-				<version>2.9.1</version>
-				<executions>
-					<execution>
-						<id>doc-api</id>
-						<goals>
-							<goal>jar</goal>
-							<goal>test-jar</goal>
-						</goals>
-						<configuration>
-							<show>protected</show>
-							<finalName>${project.artifactId}-${project.version}-doc-api</finalName>
-						</configuration>
-					</execution>
-					<execution>
-						<id>doc-design</id>
-						<goals>
-							<goal>jar</goal>
-							<goal>test-jar</goal>
-						</goals>
-						<configuration>
-							<show>private</show>
-							<finalName>${project.artifactId}-${project.version}-doc-design</finalName>
-							<classifier>design</classifier>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-dependency-plugin</artifactId>
 				<version>3.3.0</version>
 				<executions>
