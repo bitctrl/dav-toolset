@@ -32,9 +32,9 @@
 
 	<repositories>
 		<repository>
-			<id>bintray-bitctrl-maven</id>
-			<name>bintray</name>
-			<url>http://dl.bintray.com/bitctrl/maven</url>
+			<id>nerz-maven-public</id>
+			<name>NERZ Maven</name>
+			<url>https://repo.nerz-ev.de/repository/nerz-maven-public/</url>
 		</repository>
 	</repositories>
 
@@ -53,13 +53,13 @@
 			<dependency>
 				<groupId>de.bsvrz.dav</groupId>
 				<artifactId>de.bsvrz.dav.daf</artifactId>
-				<version>3.8.0</version>
-			</dependency>
-			<dependency>
+				<version>3.18.0</version>
+			  </dependency>
+			  <dependency>
 				<groupId>de.bsvrz.sys</groupId>
 				<artifactId>de.bsvrz.sys.funclib.application</artifactId>
-				<version>3.8.0</version>
-			</dependency>
+				<version>3.18.0</version>
+			  </dependency>
 			<dependency>
 				<groupId>junit</groupId>
 				<artifactId>junit</artifactId>
