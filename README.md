@@ -1,5 +1,5 @@
 
-# dav-toolset [![Build Status](https://travis-ci.org/bitctrl/dav-toolset.svg)](https://travis-ci.org/bitctrl/dav-toolset)
+# dav-toolset [![Maven CI](https://github.com/bitctrl/dav-toolset/actions/workflows/maven.yml/badge.svg)](https://github.com/bitctrl/dav-toolset/actions/workflows/maven.yml)
 
 Allgemeine Tools für den Datenverteiler
 
