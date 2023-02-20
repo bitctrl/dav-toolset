@@ -53,7 +53,7 @@
 			<dependency>
 				<groupId>de.bsvrz.dav</groupId>
 				<artifactId>de.bsvrz.dav.daf</artifactId>
-				<version>3.18.0</version>
+				<version>3.19.0</version>
 			  </dependency>
 			  <dependency>
 				<groupId>de.bsvrz.sys</groupId>
