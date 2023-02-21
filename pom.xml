@@ -58,7 +58,7 @@
 			  <dependency>
 				<groupId>de.bsvrz.sys</groupId>
 				<artifactId>de.bsvrz.sys.funclib.application</artifactId>
-				<version>3.18.0</version>
+				<version>3.19.0</version>
 			  </dependency>
 			<dependency>
 				<groupId>junit</groupId>
