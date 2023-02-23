@@ -192,7 +192,7 @@
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-assembly-plugin</artifactId>
-					<version>3.4.2</version>
+					<version>3.5.0</version>
 					<configuration>
 						<finalName>SWE_${project.artifactId}_V${project.version}_D${maven.build.timestamp}</finalName>
 						<appendAssemblyId>false</appendAssemblyId>
