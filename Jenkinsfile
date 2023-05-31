@@ -46,7 +46,7 @@ pipeline {
 
         always {
         	//junit 'build/test-results/test/**/*.xml'
-            archiveArtifacts artifacts: 'build/*.zip', fingerprint: false
+            archiveArtifacts artifacts: '**/build/distributions/*.zip', fingerprint: false
 
              recordIssues(
                     tools: [taskScanner(highTags: 'FIXME', ignoreCase: true, includePattern: '**/*.java', lowTags: 'XXX', normalTags: 'TODO'),
