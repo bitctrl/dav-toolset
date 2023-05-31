@@ -1,3 +1,22 @@
 {
-  "$schema": "https://docs.renovatebot.com/renovate-schema.json"
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": [
+    "config:base",  ":disableDependencyDashboard", "github>whitesource/merge-confidence:beta"
+  ],
+  "packageRules": [
+    {
+      "matchPackageNames": [
+        "jfrog/setup-jfrog-cli",
+        "github-action"
+      ],
+      "matchUpdateTypes": [
+        "minor",
+        "patch",
+        "pin",
+        "digest"
+      ],
+      "automerge": true
+    }
+  ]
+
 }
