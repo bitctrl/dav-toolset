@@ -1,0 +1,28 @@
+//--------------------------------------------------------------------
+// NERZ-SWE-Plugin
+//--------------------------------------------------------------------
+plugins {
+  id "de.bsvrz.gradle.nerzswe" version "0.29.0"
+}
+
+group = 'de.bitctrl.dav.toolset'
+description = 'Tool zur Analyse eines Datenverteilerarchivs'
+
+// Properties des NERZ-SWE-Plugins:
+nerzswe {
+  mainClassName = 'de.bitctrl.dav.toolset.archivcheck.ArchivSizer'
+  sweStatus = 'BETA'
+  sweDatum = ''
+}
+
+//--------------------------------------------------------------------
+// Abhängigkeiten
+//--------------------------------------------------------------------
+String kernsoftware_version = '3.19.0'
+
+dependencies {
+    implementation "de.bsvrz.dav:de.bsvrz.dav.daf:$kernsoftware_version"
+    implementation "de.bsvrz.sys:de.bsvrz.sys.funclib.application:$kernsoftware_version"
+
+	testImplementation 'junit:junit:4.13.2'
+}

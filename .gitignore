@@ -1,2 +1,8 @@
 target/
 .vscode/settings.json
+.gradle/
+buildSrc
+/.vscode/
+bin/
+build/
+org.sonarlint.eclipse.core.prefs
