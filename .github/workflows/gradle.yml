@@ -1,4 +1,4 @@
-name: Maven CI
+name: Gradle CI
 
 on: [push,workflow_dispatch]
    
@@ -20,5 +20,5 @@ jobs:
         server-id: github # Value of the distributionManagement/repository/id field of the pom.xml
         settings-path: ${{ github.workspace }} # location for the settings.xml file
 
-    - name: Build with Maven
-      run: mvn -B verify checkstyle:checkstyle --file pom.xml
+    - name: Build with Gradle
+      run: ./gradlew clean build
