@@ -1,5 +1,5 @@
 
-# dav-toolset [![Maven CI](https://github.com/bitctrl/dav-toolset/actions/workflows/maven.yml/badge.svg)](https://github.com/bitctrl/dav-toolset/actions/workflows/maven.yml)
+# dav-toolset [![Gradle CI](https://github.com/bitctrl/dav-toolset/actions/workflows/gradle.yml/badge.svg)](https://github.com/bitctrl/dav-toolset/actions/workflows/gradle.yml)
 
 Allgemeine Tools für den Datenverteiler
 
