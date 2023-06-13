@@ -2,7 +2,7 @@
 // NERZ-SWE-Plugin
 //--------------------------------------------------------------------
 plugins {
-  id "de.bsvrz.gradle.nerzswe" version "0.29.0"
+  id "de.bsvrz.gradle.nerzswe" version "0.29.1"
 }
 
 group = 'de.bitctrl.dav.toolset'
