@@ -6,3 +6,7 @@ buildSrc
 bin/
 build/
 org.sonarlint.eclipse.core.prefs
+.settings/
+.classpath
+.project
+.idea/
