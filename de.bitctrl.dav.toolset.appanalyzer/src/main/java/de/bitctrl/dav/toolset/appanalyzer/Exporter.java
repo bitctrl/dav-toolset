@@ -58,74 +58,15 @@ import de.bsvrz.dav.daf.main.config.SystemObjectType;
  */
 public class Exporter extends Thread {
 
-	private static class SummaryKey {
-
-		private final String rolle;
-		private final SystemObjectType type;
-		private final AttributeGroup atg;
-		private final Aspect asp;
-
-		SummaryKey(final String rolle, final SystemObjectType type, final AttributeGroup atg, final Aspect asp) {
-			this.rolle = rolle;
-			this.type = type;
-			this.atg = atg;
-			this.asp = asp;
-		}
-
-		@Override
-		public int hashCode() {
-			final int prime = 31;
-			int result = 1;
-			result = (prime * result) + ((asp == null) ? 0 : asp.hashCode());
-			result = (prime * result) + ((atg == null) ? 0 : atg.hashCode());
-			result = (prime * result) + ((rolle == null) ? 0 : rolle.hashCode());
-			result = (prime * result) + ((type == null) ? 0 : type.hashCode());
-			return result;
-		}
-
-		@Override
-		public boolean equals(final Object obj) {
-			if (this == obj) {
-				return true;
-			}
-			if (obj == null) {
-				return false;
-			}
-			if (!(obj instanceof SummaryKey)) {
-				return false;
-			}
-			final SummaryKey other = (SummaryKey) obj;
-			if (asp == null) {
-				if (other.asp != null) {
-					return false;
-				}
-			} else if (!asp.equals(other.asp)) {
-				return false;
-			}
-			if (atg == null) {
-				if (other.atg != null) {
-					return false;
-				}
-			} else if (!atg.equals(other.atg)) {
-				return false;
-			}
-			if (rolle == null) {
-				if (other.rolle != null) {
-					return false;
-				}
-			} else if (!rolle.equals(other.rolle)) {
-				return false;
-			}
-			if (type == null) {
-				if (other.type != null) {
-					return false;
-				}
-			} else if (!type.equals(other.type)) {
-				return false;
-			}
-			return true;
-		}
-
+	/**
+	 * Key for summarizing export data by role, type, attribute group and aspect.
+	 * 
+	 * @param rolle the role
+	 * @param type the system object type
+	 * @param atg the attribute group
+	 * @param asp the aspect
+	 */
+	private record SummaryKey(String rolle, SystemObjectType type, AttributeGroup atg, Aspect asp) {
 	}
 
 	private final Set<SystemObject> exportApplications = new HashSet<>();

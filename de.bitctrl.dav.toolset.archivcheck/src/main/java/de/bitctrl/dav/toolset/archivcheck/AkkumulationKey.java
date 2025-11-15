@@ -26,48 +26,11 @@
 
 package de.bitctrl.dav.toolset.archivcheck;
 
-import java.util.Objects;
-
-class AkkumulationKey {
-
-	private Object atg;
-	private Object asp;
-
-	AkkumulationKey(final Object atg, final Object aspect) {
-		this.atg = atg;
-		this.asp = aspect;
-	}
-
-	@Override
-	public boolean equals(final Object obj) {
-
-		if (this == obj) {
-			return true;
-		}
-		if (obj instanceof AkkumulationKey) {
-			final AkkumulationKey akkKey = (AkkumulationKey) obj;
-			return Objects.equals(asp, akkKey.asp) && Objects.equals(atg, akkKey.atg);
-		}
-
-		return false;
-	}
-
-	public Object getAsp() {
-		return asp;
-	}
-
-	public Object getAtg() {
-		return atg;
-	}
-
-	@Override
-	public int hashCode() {
-		return Objects.hash(asp, atg);
-	}
-
-	@Override
-	public String toString() {
-		return "AkkumulationKey [atg=" + atg + ", asp=" + asp + "]";
-	}
-
+/**
+ * Key for accumulating archive data by attribute group and aspect.
+ * 
+ * @param atg the attribute group
+ * @param asp the aspect
+ */
+record AkkumulationKey(Object atg, Object asp) {
 }

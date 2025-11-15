@@ -72,7 +72,7 @@ public class ArchivSizer implements StandardApplication {
 		}
 
 		private boolean isValid() {
-			return (this.object instanceof SystemObject) && ((SystemObject) this.object).isValid();
+			return (this.object instanceof SystemObject sysObj) && sysObj.isValid();
 		}
 
 		private boolean isMissed() {
@@ -113,12 +113,12 @@ public class ArchivSizer implements StandardApplication {
 
 		model = connection.getDataModel();
 
-		final File startDir = new File(baseDir);
+		var startDir = new File(baseDir);
 		if (!startDir.isDirectory()) {
 			throw new InvalidArgumentException(baseDir + " ist kein Verzeichnis");
 		}
 
-		final File[] listFiles = startDir.listFiles();
+		var listFiles = startDir.listFiles();
 		if (listFiles != null) {
 			for (final File child : listFiles) {
 				if (child.getName().startsWith(ArchivSizer.OBJ_DIR_PREFIX)) {
@@ -127,12 +127,7 @@ public class ArchivSizer implements StandardApplication {
 			}
 		}
 
-		Collections.sort(results, new Comparator<ResultSet>() {
-			@Override
-			public int compare(final ResultSet o1, final ResultSet o2) {
-				return ((Long) o2.size.getSize()).compareTo(o1.size.getSize());
-			}
-		});
+		Collections.sort(results, (o1, o2) -> ((Long) o2.size.getSize()).compareTo(o1.size.getSize()));
 
 		try (PrintWriter output = new PrintWriter(new FileWriter(outputFile))) {
 			printheader(output);
@@ -153,7 +148,7 @@ public class ArchivSizer implements StandardApplication {
 
 	private void printResult(final PrintWriter output, final ResultSet set) {
 
-		final StringBuffer result = new StringBuffer(200);
+		var result = new StringBuilder(200);
 		if (set.isMissed()) {
 			result.append('-');
 		} else if (!set.isValid()) {
@@ -191,12 +186,12 @@ public class ArchivSizer implements StandardApplication {
 	}
 
 	private void printAkkResult(final PrintWriter output, final AkkumulationKey key, final SizeSet value) {
-		final StringBuffer result = new StringBuffer(200);
+		var result = new StringBuilder(200);
 		result.append(value.getSetCount());
 		result.append(';');
-		result.append(key.getAtg());
+		result.append(key.atg());
 		result.append(';');
-		result.append(key.getAsp());
+		result.append(key.asp());
 		result.append(';');
 		result.append(value.getSize());
 		result.append(';');
