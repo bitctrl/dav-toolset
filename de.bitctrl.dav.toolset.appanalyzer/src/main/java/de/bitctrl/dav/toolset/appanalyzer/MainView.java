@@ -94,16 +94,12 @@ public class MainView extends JFrame {
 
 		final JButton exportButton = new JButton("Exportiere Anmeldungen");
 		getContentPane().add(exportButton, BorderLayout.SOUTH);
-		exportButton.addActionListener(new ActionListener() {
-
-			@Override
-			public void actionPerformed(final ActionEvent e) {
-				final JFileChooser fileChooser = new JFileChooser();
-				if (fileChooser.showOpenDialog(MainView.this) == JFileChooser.APPROVE_OPTION) {
-					final Exporter exporter = new Exporter(dav, applicationList, fileChooser.getSelectedFile(),
-							onlySummary);
-					exporter.start();
-				}
+		exportButton.addActionListener(e -> {
+			var fileChooser = new JFileChooser();
+			if (fileChooser.showOpenDialog(MainView.this) == JFileChooser.APPROVE_OPTION) {
+				var exporter = new Exporter(dav, applicationList, fileChooser.getSelectedFile(),
+						onlySummary);
+				exporter.start();
 			}
 		});
 	}

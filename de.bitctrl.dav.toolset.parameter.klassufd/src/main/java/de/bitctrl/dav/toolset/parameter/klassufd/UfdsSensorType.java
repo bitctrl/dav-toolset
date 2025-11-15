@@ -87,15 +87,11 @@ public enum UfdsSensorType {
 	 * @return das Array
 	 */
 	public double[][] getDefaultStufen() {
-		switch (this) {
-		case NI:
-			return UfdsSensorType.NI_STUFEN;
-		case SW:
-			return UfdsSensorType.SW_STUFEN;
-		case WFD:
-			return UfdsSensorType.WFD_STUFEN;
-		default:
-			return UfdsSensorType.EMPTY;
-		}
+		return switch (this) {
+			case NI -> NI_STUFEN;
+			case SW -> SW_STUFEN;
+			case WFD -> WFD_STUFEN;
+			default -> EMPTY;
+		};
 	}
 }
