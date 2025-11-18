@@ -19,7 +19,7 @@ nerzswe {
 //--------------------------------------------------------------------
 // Abhängigkeiten
 //--------------------------------------------------------------------
-String kernsoftware_version = '3.19.0'
+String kernsoftware_version = '3.19.2'
 
 dependencies {
     implementation "de.bsvrz.dav:de.bsvrz.dav.daf:$kernsoftware_version"

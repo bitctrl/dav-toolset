@@ -71,25 +71,21 @@ public class KbLister implements StandardApplication {
 
 		final DataModel model = connection.getDataModel();
 
-		Set<ConfigurationArea> allKbSortedPerPid = new TreeSet<>(new Comparator<ConfigurationArea>() {
-
-			@Override
-			public int compare(final ConfigurationArea o1, final ConfigurationArea o2) {
-				return o1.getPid().compareTo(o2.getPid());
-			}
-		});
+		var allKbSortedPerPid = new TreeSet<ConfigurationArea>(
+				(o1, o2) -> o1.getPid().compareTo(o2.getPid()));
 
 		for (SystemObject obj : model.getTypeTypeObject().getElements()) {
-			final SystemObjectType type = (SystemObjectType) obj;
-			final TreeSet<ConfigurationArea> kbs = new TreeSet<>(new PidComparator());
+			if (obj instanceof SystemObjectType type) {
+				var kbs = new TreeSet<ConfigurationArea>(new PidComparator());
 
-			for (SystemObject element : type.getElements()) {
-				final ConfigurationArea configurationArea = element.getConfigurationArea();
-				kbs.add(configurationArea);
-				allKbSortedPerPid.add(configurationArea);
+				for (SystemObject element : type.getElements()) {
+					var configurationArea = element.getConfigurationArea();
+					kbs.add(configurationArea);
+					allKbSortedPerPid.add(configurationArea);
+				}
+
+				results.put(type, kbs);
 			}
-
-			results.put(type, kbs);
 		}
 
 		for (Entry<SystemObjectType, Set<ConfigurationArea>> result : results.entrySet()) {
